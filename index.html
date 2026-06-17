@@ -1,130 +1,210 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>World Map Pro Max</title>
-
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <title>World Countries</title>
 
   <style>
     body{
       margin:0;
       font-family:Arial;
-      background:#111;
       color:white;
-      text-align:center;
+
+      background-image:url("https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg");
+      background-size:cover;
+      background-attachment:fixed;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      background:rgba(0,0,0,0.6);
+      z-index:-1;
     }
 
     h1{
       margin:0;
-      padding:12px;
+      padding:15px;
       background:#5A3A1E;
+      text-align:center;
     }
 
-    #map{
-      height:90vh;
-      width:100%;
+    h3{
+      text-align:center;
+      margin:5px;
     }
+
+    input{
+      display:block;
+      margin:10px auto;
+      padding:10px;
+      width:60%;
+      border:none;
+      border-radius:5px;
+      font-size:16px;
+    }
+
+    .container{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+    }
+
+    .card{
+      background:white;
+      color:black;
+      width:200px;
+      margin:8px;
+      padding:10px;
+      border-radius:10px;
+      cursor:pointer;
+      text-align:center;
+      transition:0.2s;
+    }
+
+    .card:hover{
+      transform:scale(1.05);
+    }
+
+    .flag{
+      font-size:30px;
+    }
+
+    .popup{
+      display:none;
+      position:fixed;
+      top:50%;
+      left:50%;
+      transform:translate(-50%,-50%);
+      background:white;
+      color:black;
+      padding:15px;
+      border-radius:10px;
+      width:320px;
+      box-shadow:0 0 10px black;
+      text-align:left;
+    }
+
+    .close{
+      background:red;
+      color:white;
+      border:none;
+      padding:5px 10px;
+      float:right;
+      cursor:pointer;
+    }
+
   </style>
 </head>
 
 <body>
 
-<h1>🌍 World Map Explorer (Flags + Info)</h1>
-<div id="map"></div>
+<h1>🌍 World Countries Explorer</h1>
+<h3>Created by Saim</h3>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<input type="text" id="search" placeholder="Search country..." onkeyup="searchCountry()">
+
+<div class="container" id="container"></div>
+
+<!-- POPUP -->
+<div class="popup" id="popup">
+  <button class="close" onclick="closePopup()">X</button>
+
+  <h2 id="name"></h2>
+  <p id="capital"></p>
+  <p id="population"></p>
+  <p id="language"></p>
+  <p id="currency"></p>
+</div>
 
 <script>
 
-const map = L.map('map').setView([20, 0], 2);
+/* 🌍 50+ COUNTRIES DATA */
+const countries = [
+["🇵🇰 Pakistan","Islamabad","240M","Urdu","PKR"],
+["🇮🇳 India","New Delhi","1.4B","Hindi","INR"],
+["🇺🇸 USA","Washington DC","330M","English","USD"],
+["🇬🇧 UK","London","67M","English","GBP"],
+["🇨🇳 China","Beijing","1.4B","Chinese","CNY"],
+["🇯🇵 Japan","Tokyo","125M","Japanese","JPY"],
+["🇩🇪 Germany","Berlin","83M","German","EUR"],
+["🇫🇷 France","Paris","68M","French","EUR"],
+["🇧🇷 Brazil","Brasília","214M","Portuguese","BRL"],
+["🇷🇺 Russia","Moscow","144M","Russian","RUB"],
+["🇹🇷 Turkey","Ankara","85M","Turkish","TRY"],
+["🇮🇹 Italy","Rome","60M","Italian","EUR"],
+["🇪🇸 Spain","Madrid","47M","Spanish","EUR"],
+["🇨🇦 Canada","Ottawa","40M","English/French","CAD"],
+["🇦🇺 Australia","Canberra","26M","English","AUD"],
+["🇸🇦 Saudi Arabia","Riyadh","36M","Arabic","SAR"],
+["🇮🇩 Indonesia","Jakarta","275M","Indonesian","IDR"],
+["🇲🇽 Mexico","Mexico City","126M","Spanish","MXN"],
+["🇪🇬 Egypt","Cairo","110M","Arabic","EGP"],
+["🇳🇬 Nigeria","Abuja","220M","English","NGN"],
+["🇧🇩 Bangladesh","Dhaka","170M","Bengali","BDT"],
+["🇿🇦 South Africa","Pretoria","60M","English","ZAR"],
+["🇻🇳 Vietnam","Hanoi","98M","Vietnamese","VND"],
+["🇹🇭 Thailand","Bangkok","70M","Thai","THB"],
+["🇵🇭 Philippines","Manila","115M","Filipino","PHP"],
+["🇲🇾 Malaysia","Kuala Lumpur","33M","Malay","MYR"],
+["🇮🇷 Iran","Tehran","88M","Persian","IRR"],
+["🇮🇶 Iraq","Baghdad","44M","Arabic","IQD"],
+["🇺🇦 Ukraine","Kyiv","41M","Ukrainian","UAH"],
+["🇵🇱 Poland","Warsaw","38M","Polish","PLN"],
+["🇳🇱 Netherlands","Amsterdam","17M","Dutch","EUR"],
+["🇧🇪 Belgium","Brussels","11M","Dutch/French","EUR"],
+["🇸🇪 Sweden","Stockholm","10M","Swedish","SEK"],
+["🇳🇴 Norway","Oslo","5M","Norwegian","NOK"],
+["🇨🇭 Switzerland","Bern","8M","German/French","CHF"],
+["🇬🇷 Greece","Athens","10M","Greek","EUR"],
+["🇵🇹 Portugal","Lisbon","10M","Portuguese","EUR"],
+["🇰🇷 South Korea","Seoul","52M","Korean","KRW"],
+["🇸🇬 Singapore","Singapore","6M","English","SGD"]
+];
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 6,
-}).addTo(map);
+let container = document.getElementById("container");
 
-/* 🌍 50+ COUNTRIES WITH FLAGS */
-const countryData = {
-  "Pakistan": {flag:"🇵🇰",capital:"Islamabad",pop:"240M",lang:"Urdu",curr:"PKR",sport:"Hockey"},
-  "India": {flag:"🇮🇳",capital:"New Delhi",pop:"1.4B",lang:"Hindi",curr:"INR",sport:"Cricket"},
-  "USA": {flag:"🇺🇸",capital:"Washington DC",pop:"330M",lang:"English",curr:"USD",sport:"American Football"},
-  "UK": {flag:"🇬🇧",capital:"London",pop:"67M",lang:"English",curr:"GBP",sport:"Football"},
-  "China": {flag:"🇨🇳",capital:"Beijing",pop:"1.4B",lang:"Chinese",curr:"CNY",sport:"Table Tennis"},
-  "Japan": {flag:"🇯🇵",capital:"Tokyo",pop:"125M",lang:"Japanese",curr:"JPY",sport:"Sumo"},
-  "Germany": {flag:"🇩🇪",capital:"Berlin",pop:"83M",lang:"German",curr:"EUR",sport:"Football"},
-  "France": {flag:"🇫🇷",capital:"Paris",pop:"68M",lang:"French",curr:"EUR",sport:"Football"},
-  "Italy": {flag:"🇮🇹",capital:"Rome",pop:"60M",lang:"Italian",curr:"EUR",sport:"Football"},
-  "Spain": {flag:"🇪🇸",capital:"Madrid",pop:"47M",lang:"Spanish",curr:"EUR",sport:"Football"},
+function show(data){
+  container.innerHTML = "";
 
-  "Brazil": {flag:"🇧🇷",capital:"Brasília",pop:"214M",lang:"Portuguese",curr:"BRL",sport:"Football"},
-  "Russia": {flag:"🇷🇺",capital:"Moscow",pop:"144M",lang:"Russian",curr:"RUB",sport:"Ice Hockey"},
-  "Canada": {flag:"🇨🇦",capital:"Ottawa",pop:"40M",lang:"English/French",curr:"CAD",sport:"Ice Hockey"},
-  "Australia": {flag:"🇦🇺",capital:"Canberra",pop:"26M",lang:"English",curr:"AUD",sport:"Cricket"},
+  data.forEach(c=>{
+    container.innerHTML += `
+      <div class="card" onclick="openPopup('${c[0]}','${c[1]}','${c[2]}','${c[3]}','${c[4]}')">
+        <div class="flag">${c[0].split(" ")[0]}</div>
+        <b>${c[0].split(" ")[1] || c[0]}</b>
+      </div>
+    `;
+  });
+}
 
-  "Saudi Arabia": {flag:"🇸🇦",capital:"Riyadh",pop:"36M",lang:"Arabic",curr:"SAR",sport:"Football"},
-  "Turkey": {flag:"🇹🇷",capital:"Ankara",pop:"85M",lang:"Turkish",curr:"TRY",sport:"Wrestling"},
-  "Indonesia": {flag:"🇮🇩",capital:"Jakarta",pop:"275M",lang:"Indonesian",curr:"IDR",sport:"Badminton"},
-  "Mexico": {flag:"🇲🇽",capital:"Mexico City",pop:"126M",lang:"Spanish",curr:"MXN",sport:"Football"},
-  "Egypt": {flag:"🇪🇬",capital:"Cairo",pop:"110M",lang:"Arabic",curr:"EGP",sport:"Football"},
+show(countries);
 
-  "Nigeria": {flag:"🇳🇬",capital:"Abuja",pop:"220M",lang:"English",curr:"NGN",sport:"Football"},
-  "Bangladesh": {flag:"🇧🇩",capital:"Dhaka",pop:"170M",lang:"Bengali",curr:"BDT",sport:"Cricket"},
-  "South Africa": {flag:"🇿🇦",capital:"Pretoria",pop:"60M",lang:"English",curr:"ZAR",sport:"Rugby"},
-  "Vietnam": {flag:"🇻🇳",capital:"Hanoi",pop:"98M",lang:"Vietnamese",curr:"VND",sport:"Football"},
-  "Thailand": {flag:"🇹🇭",capital:"Bangkok",pop:"70M",lang:"Thai",curr:"THB",sport:"Muay Thai"},
+function openPopup(name,cap,pop,lang,curr){
+  document.getElementById("popup").style.display="block";
 
-  "Philippines": {flag:"🇵🇭",capital:"Manila",pop:"115M",lang:"Filipino",curr:"PHP",sport:"Basketball"},
-  "Malaysia": {flag:"🇲🇾",capital:"Kuala Lumpur",pop:"33M",lang:"Malay",curr:"MYR",sport:"Badminton"}
-};
+  document.getElementById("name").innerText = name;
+  document.getElementById("capital").innerText = "Capital: " + cap;
+  document.getElementById("population").innerText = "Population: " + pop;
+  document.getElementById("language").innerText = "Language: " + lang;
+  document.getElementById("currency").innerText = "Currency: " + curr;
+}
 
-/* 🌍 LOAD WORLD MAP */
-fetch("https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson")
-.then(res => res.json())
-.then(data => {
+function closePopup(){
+  document.getElementById("popup").style.display="none";
+}
 
-  L.geoJSON(data, {
-    style:{
-      color:"white",
-      weight:1,
-      fillColor:"green",
-      fillOpacity:0.2
-    },
+function searchCountry(){
+  let val = document.getElementById("search").value.toLowerCase();
 
-    onEachFeature:function(feature,layer){
+  let filtered = countries.filter(c =>
+    c[0].toLowerCase().includes(val)
+  );
 
-      layer.on("click", function(){
-
-        let name = feature.properties.ADMIN;
-        let info = countryData[name];
-
-        if(info){
-          L.popup()
-          .setLatLng(layer.getBounds().getCenter())
-          .setContent(`
-            <div style="text-align:center;">
-              <div style="font-size:35px;">${info.flag}</div>
-              <b style="font-size:18px;">${name}</b>
-              <hr>
-              Capital: ${info.capital}<br>
-              Population: ${info.pop}<br>
-              Language: ${info.lang}<br>
-              Currency: ${info.curr}<br>
-              Sport: ${info.sport}
-            </div>
-          `)
-          .openOn(map);
-        } else {
-          L.popup()
-          .setLatLng(layer.getBounds().getCenter())
-          .setContent(`<b>${name}</b><br>No data available`)
-          .openOn(map);
-        }
-
-      });
-
-    }
-  }).addTo(map);
-
-});
+  show(filtered);
+}
 
 </script>
 
