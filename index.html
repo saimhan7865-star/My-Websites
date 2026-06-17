@@ -69,7 +69,7 @@
 
 <script>
 
-// ✔️ FULL DATA (OFFLINE, NO API)
+// ✔️ OFFLINE DATA (NO LOGIN, NO API)
 const countries = [
 ["🇦🇫","Afghanistan","Kabul","41M","Pashto","AFN"],
 ["🇦🇱","Albania","Tirana","2.8M","Albanian","ALL"],
@@ -85,22 +85,17 @@ const countries = [
 ["🇮🇳","India","New Delhi","1.4B","Hindi","INR"],
 ["🇮🇩","Indonesia","Jakarta","275M","Indonesian","IDR"],
 ["🇮🇷","Iran","Tehran","88M","Persian","IRR"],
-["🇮🇶","Iraq","Baghdad","44M","Arabic","IQD"],
 ["🇮🇹","Italy","Rome","60M","Italian","EUR"],
 ["🇯🇵","Japan","Tokyo","125M","Japanese","JPY"],
 ["🇰🇪","Kenya","Nairobi","55M","Swahili/English","KES"],
 ["🇲🇽","Mexico","Mexico City","126M","Spanish","MXN"],
-["🇳🇱","Netherlands","Amsterdam","17M","Dutch","EUR"],
 ["🇳🇬","Nigeria","Abuja","220M","English","NGN"],
 ["🇵🇰","Pakistan","Islamabad","240M","Urdu","PKR"],
-["🇵🇱","Poland","Warsaw","38M","Polish","PLN"],
-["🇵🇹","Portugal","Lisbon","10M","Portuguese","EUR"],
 ["🇷🇺","Russia","Moscow","144M","Russian","RUB"],
 ["🇸🇦","Saudi Arabia","Riyadh","36M","Arabic","SAR"],
 ["🇿🇦","South Africa","Pretoria","60M","English","ZAR"],
 ["🇰🇷","South Korea","Seoul","52M","Korean","KRW"],
 ["🇪🇸","Spain","Madrid","47M","Spanish","EUR"],
-["🇱🇰","Sri Lanka","Colombo","22M","Sinhala/Tamil","LKR"],
 ["🇸🇪","Sweden","Stockholm","10M","Swedish","SEK"],
 ["🇨🇭","Switzerland","Bern","8.7M","German/French","CHF"],
 ["🇹🇭","Thailand","Bangkok","70M","Thai","THB"],
@@ -111,7 +106,6 @@ const countries = [
 ["🇻🇳","Vietnam","Hanoi","98M","Vietnamese","VND"]
 ];
 
-// render
 let container = document.getElementById("container");
 
 function show(data){
@@ -133,7 +127,7 @@ function show(data){
 
 show(countries);
 
-// search
+// SEARCH
 function searchCountry(){
   let val = document.getElementById("search").value.toLowerCase();
 
