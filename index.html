@@ -1,47 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>World Countries Pro</title>
+  <title>World Countries</title>
 
   <style>
     body{
       font-family: Arial;
-      margin:0;
-      background:#f2f2f2;
       text-align:center;
+      background:#f2f2f2;
+      margin:0;
     }
 
-    header{
+    h1{
       background:#4CAF50;
       color:white;
       padding:15px;
-    }
-
-    #loginBox{
-      margin-top:80px;
+      margin:0;
     }
 
     input{
       padding:10px;
-      margin:5px;
-      width:220px;
-    }
-
-    button{
-      padding:10px 20px;
-      cursor:pointer;
-    }
-
-    #app{
-      display:none;
+      width:60%;
+      margin:15px;
+      font-size:16px;
     }
 
     table{
-      margin:auto;
       width:95%;
+      margin:auto;
       background:white;
       border-collapse:collapse;
-      margin-top:20px;
     }
 
     th, td{
@@ -57,132 +45,57 @@
     img{
       width:30px;
     }
-
-    .topbar{
-      display:flex;
-      justify-content:space-between;
-      padding:10px;
-      background:#222;
-      color:white;
-    }
   </style>
 </head>
 
 <body>
 
-<header>
-  <h1>🌍 World Countries Website</h1>
-</header>
+<h1>🌍 World Countries Website</h1>
 
-<!-- LOGIN -->
-<div id="loginBox">
-  <h2>Login / Sign Up</h2>
+<input type="text" id="search" placeholder="Search country..." onkeyup="searchCountry()">
 
-  <input type="text" id="name" placeholder="Enter Name"><br>
-  <input type="password" id="pass" placeholder="Password"><br>
-
-  <button onclick="signup()">Sign Up</button>
-  <button onclick="login()">Login</button>
-</div>
-
-<!-- APP -->
-<div id="app">
-
-  <div class="topbar">
-    <div>Welcome, <span id="user"></span></div>
-    <button onclick="logout()">Logout</button>
-  </div>
-
-  <input type="text" id="search" placeholder="Search country..." onkeyup="searchCountry()">
-
-  <table id="table">
-    <tr>
-      <th>Flag</th>
-      <th>Country</th>
-      <th>Capital</th>
-      <th>Population</th>
-      <th>Language</th>
-      <th>Currency</th>
-    </tr>
-  </table>
-
-</div>
+<table id="table">
+  <tr>
+    <th>Flag</th>
+    <th>Country</th>
+    <th>Capital</th>
+    <th>Population</th>
+    <th>Language</th>
+    <th>Currency</th>
+  </tr>
+</table>
 
 <script>
 
-function signup(){
-  let name = document.getElementById("name").value;
-  let pass = document.getElementById("pass").value;
+fetch("https://restcountries.com/v3.1/all")
+.then(res => res.json())
+.then(data => {
 
-  if(name=="" || pass==""){
-    alert("Fill both fields");
-    return;
-  }
+  let table = document.getElementById("table");
 
-  localStorage.setItem("user", name);
-  localStorage.setItem("pass", pass);
+  data.forEach(c => {
 
-  alert("Account created! Now login");
-}
+    let name = c.name.common;
+    let capital = c.capital ? c.capital[0] : "N/A";
+    let population = c.population.toLocaleString();
+    let flag = c.flags.png;
 
-function login(){
-  let name = document.getElementById("name").value;
-  let pass = document.getElementById("pass").value;
+    let language = c.languages ? Object.values(c.languages)[0] : "N/A";
+    let currency = c.currencies ? Object.values(c.currencies)[0].name : "N/A";
 
-  let u = localStorage.getItem("user");
-  let p = localStorage.getItem("pass");
+    let row = table.insertRow();
 
-  if(name === u && pass === p){
-    document.getElementById("loginBox").style.display="none";
-    document.getElementById("app").style.display="block";
-    document.getElementById("user").innerText = name;
+    row.innerHTML = `
+      <td><img src="${flag}"></td>
+      <td>${name}</td>
+      <td>${capital}</td>
+      <td>${population}</td>
+      <td>${language}</td>
+      <td>${currency}</td>
+    `;
+  });
+});
 
-    loadCountries(); // IMPORTANT
-  }else{
-    alert("Wrong username or password");
-  }
-}
-
-function logout(){
-  location.reload();
-}
-
-// ✔️ FIXED API LOADING
-async function loadCountries(){
-  try{
-    const res = await fetch("https://restcountries.com/v3.1/all");
-    const data = await res.json();
-
-    let table = document.getElementById("table");
-
-    data.forEach(c => {
-
-      let name = c.name.common;
-      let capital = c.capital ? c.capital[0] : "N/A";
-      let population = c.population.toLocaleString();
-      let flag = c.flags.png;
-
-      let language = c.languages ? Object.values(c.languages)[0] : "N/A";
-      let currency = c.currencies ? Object.values(c.currencies)[0].name : "N/A";
-
-      let row = table.insertRow();
-
-      row.innerHTML = `
-        <td><img src="${flag}"></td>
-        <td>${name}</td>
-        <td>${capital}</td>
-        <td>${population}</td>
-        <td>${language}</td>
-        <td>${currency}</td>
-      `;
-    });
-
-  }catch(err){
-    alert("Data load nahi ho raha. Internet check karo.");
-  }
-}
-
-// SEARCH
 function searchCountry(){
   let input = document.getElementById("search").value.toLowerCase();
   let rows = document.getElementById("table").getElementsByTagName("tr");
