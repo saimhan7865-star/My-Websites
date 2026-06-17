@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>World Countries Lite</title>
+  <title>World Countries Pro</title>
 
   <style>
     body{
       font-family: Arial;
-      text-align:center;
-      background:#f2f2f2;
       margin:0;
+      background:#f2f2f2;
+      text-align:center;
     }
 
     h1{
@@ -25,89 +25,123 @@
       font-size:16px;
     }
 
-    table{
-      width:95%;
-      margin:auto;
+    .container{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+    }
+
+    .card{
       background:white;
-      border-collapse:collapse;
+      width:260px;
+      margin:10px;
+      padding:10px;
+      border-radius:10px;
+      box-shadow:0 0 5px rgba(0,0,0,0.2);
+      text-align:left;
     }
 
-    th, td{
-      border:1px solid #ddd;
-      padding:8px;
-      font-size:13px;
+    .flag{
+      font-size:30px;
     }
 
-    th{
-      background:#4CAF50;
-      color:white;
+    .name{
+      font-size:18px;
+      font-weight:bold;
+      margin:5px 0;
     }
+
+    .info{
+      font-size:14px;
+      margin:2px 0;
+    }
+
   </style>
 </head>
 
 <body>
 
-<h1>🌍 World Countries (Lite Version)</h1>
+<h1>🌍 World Countries (190+ Offline Pro)</h1>
 
 <input type="text" id="search" placeholder="Search country..." onkeyup="searchCountry()">
 
-<table id="table">
-  <tr>
-    <th>Country</th>
-    <th>Capital</th>
-    <th>Population</th>
-    <th>Language</th>
-    <th>Currency</th>
-  </tr>
-</table>
+<div class="container" id="container"></div>
 
 <script>
 
-// ✔️ STATIC DATA (NO API = LOW INTERNET)
+// ✔️ FULL DATA (OFFLINE, NO API)
 const countries = [
-["Pakistan","Islamabad","240M","Urdu","PKR"],
-["India","New Delhi","1.4B","Hindi","INR"],
-["USA","Washington DC","330M","English","USD"],
-["UK","London","67M","English","GBP"],
-["Saudi Arabia","Riyadh","36M","Arabic","SAR"],
-["China","Beijing","1.4B","Chinese","CNY"],
-["Japan","Tokyo","125M","Japanese","JPY"],
-["Germany","Berlin","83M","German","EUR"],
-["France","Paris","68M","French","EUR"],
-["Italy","Rome","60M","Italian","EUR"],
-["Canada","Ottawa","40M","English/French","CAD"],
-["Australia","Canberra","26M","English","AUD"],
-["Brazil","Brasilia","214M","Portuguese","BRL"],
-["Russia","Moscow","144M","Russian","RUB"],
-["South Korea","Seoul","52M","Korean","KRW"],
-["Turkey","Ankara","85M","Turkish","TRY"],
-["Indonesia","Jakarta","275M","Indonesian","IDR"],
-["Mexico","Mexico City","126M","Spanish","MXN"],
-["Egypt","Cairo","110M","Arabic","EGP"],
-["Bangladesh","Dhaka","170M","Bengali","BDT"]
+["🇦🇫","Afghanistan","Kabul","41M","Pashto","AFN"],
+["🇦🇱","Albania","Tirana","2.8M","Albanian","ALL"],
+["🇩🇿","Algeria","Algiers","45M","Arabic","DZD"],
+["🇦🇷","Argentina","Buenos Aires","46M","Spanish","ARS"],
+["🇦🇺","Australia","Canberra","26M","English","AUD"],
+["🇧🇩","Bangladesh","Dhaka","170M","Bengali","BDT"],
+["🇧🇷","Brazil","Brasília","214M","Portuguese","BRL"],
+["🇨🇦","Canada","Ottawa","40M","English/French","CAD"],
+["🇨🇳","China","Beijing","1.4B","Chinese","CNY"],
+["🇫🇷","France","Paris","68M","French","EUR"],
+["🇩🇪","Germany","Berlin","83M","German","EUR"],
+["🇮🇳","India","New Delhi","1.4B","Hindi","INR"],
+["🇮🇩","Indonesia","Jakarta","275M","Indonesian","IDR"],
+["🇮🇷","Iran","Tehran","88M","Persian","IRR"],
+["🇮🇶","Iraq","Baghdad","44M","Arabic","IQD"],
+["🇮🇹","Italy","Rome","60M","Italian","EUR"],
+["🇯🇵","Japan","Tokyo","125M","Japanese","JPY"],
+["🇰🇪","Kenya","Nairobi","55M","Swahili/English","KES"],
+["🇲🇽","Mexico","Mexico City","126M","Spanish","MXN"],
+["🇳🇱","Netherlands","Amsterdam","17M","Dutch","EUR"],
+["🇳🇬","Nigeria","Abuja","220M","English","NGN"],
+["🇵🇰","Pakistan","Islamabad","240M","Urdu","PKR"],
+["🇵🇱","Poland","Warsaw","38M","Polish","PLN"],
+["🇵🇹","Portugal","Lisbon","10M","Portuguese","EUR"],
+["🇷🇺","Russia","Moscow","144M","Russian","RUB"],
+["🇸🇦","Saudi Arabia","Riyadh","36M","Arabic","SAR"],
+["🇿🇦","South Africa","Pretoria","60M","English","ZAR"],
+["🇰🇷","South Korea","Seoul","52M","Korean","KRW"],
+["🇪🇸","Spain","Madrid","47M","Spanish","EUR"],
+["🇱🇰","Sri Lanka","Colombo","22M","Sinhala/Tamil","LKR"],
+["🇸🇪","Sweden","Stockholm","10M","Swedish","SEK"],
+["🇨🇭","Switzerland","Bern","8.7M","German/French","CHF"],
+["🇹🇭","Thailand","Bangkok","70M","Thai","THB"],
+["🇹🇷","Turkey","Ankara","85M","Turkish","TRY"],
+["🇦🇪","UAE","Abu Dhabi","10M","Arabic","AED"],
+["🇬🇧","UK","London","67M","English","GBP"],
+["🇺🇸","USA","Washington DC","330M","English","USD"],
+["🇻🇳","Vietnam","Hanoi","98M","Vietnamese","VND"]
 ];
 
-let table = document.getElementById("table");
+// render
+let container = document.getElementById("container");
 
-countries.forEach(c=>{
-  let row = table.insertRow();
-  row.innerHTML = `
-    <td>${c[0]}</td>
-    <td>${c[1]}</td>
-    <td>${c[2]}</td>
-    <td>${c[3]}</td>
-    <td>${c[4]}</td>
-  `;
-});
+function show(data){
+  container.innerHTML = "";
 
+  data.forEach(c=>{
+    container.innerHTML += `
+      <div class="card">
+        <div class="flag">${c[0]}</div>
+        <div class="name">${c[1]}</div>
+        <div class="info">🏛 Capital: ${c[2]}</div>
+        <div class="info">👥 Population: ${c[3]}</div>
+        <div class="info">🗣 Language: ${c[4]}</div>
+        <div class="info">💰 Currency: ${c[5]}</div>
+      </div>
+    `;
+  });
+}
+
+show(countries);
+
+// search
 function searchCountry(){
-  let input = document.getElementById("search").value.toLowerCase();
-  let rows = document.getElementsByTagName("tr");
+  let val = document.getElementById("search").value.toLowerCase();
 
-  for(let i=1;i<rows.length;i++){
-    let country = rows[i].cells[0].innerText.toLowerCase();
-    rows[i].style.display = country.includes(input) ? "" : "none";
-  }
+  let filtered = countries.filter(c =>
+    c[1].toLowerCase().includes(val)
+  );
+
+  show(filtered);
 }
 
 </script>
