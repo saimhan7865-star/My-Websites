@@ -24,7 +24,7 @@
     input{
       padding:10px;
       margin:5px;
-      width:200px;
+      width:220px;
     }
 
     button{
@@ -74,18 +74,18 @@
   <h1>🌍 World Countries Website</h1>
 </header>
 
-<!-- LOGIN SECTION -->
+<!-- LOGIN -->
 <div id="loginBox">
   <h2>Login / Sign Up</h2>
 
   <input type="text" id="name" placeholder="Enter Name"><br>
   <input type="password" id="pass" placeholder="Password"><br>
 
-  <button onclick="login()">Login</button>
   <button onclick="signup()">Sign Up</button>
+  <button onclick="login()">Login</button>
 </div>
 
-<!-- MAIN APP -->
+<!-- APP -->
 <div id="app">
 
   <div class="topbar">
@@ -110,29 +110,34 @@
 
 <script>
 
-// LOGIN SYSTEM (simple localStorage)
 function signup(){
   let name = document.getElementById("name").value;
   let pass = document.getElementById("pass").value;
 
+  if(name=="" || pass==""){
+    alert("Fill both fields");
+    return;
+  }
+
   localStorage.setItem("user", name);
   localStorage.setItem("pass", pass);
 
-  alert("Account created! Now login.");
+  alert("Account created! Now login");
 }
 
 function login(){
   let name = document.getElementById("name").value;
   let pass = document.getElementById("pass").value;
 
-  let sUser = localStorage.getItem("user");
-  let sPass = localStorage.getItem("pass");
+  let u = localStorage.getItem("user");
+  let p = localStorage.getItem("pass");
 
-  if(name == sUser && pass == sPass){
+  if(name === u && pass === p){
     document.getElementById("loginBox").style.display="none";
     document.getElementById("app").style.display="block";
     document.getElementById("user").innerText = name;
-    loadCountries();
+
+    loadCountries(); // IMPORTANT
   }else{
     alert("Wrong username or password");
   }
@@ -142,35 +147,39 @@ function logout(){
   location.reload();
 }
 
-// COUNTRIES API
+// ✔️ FIXED API LOADING
 async function loadCountries(){
+  try{
+    const res = await fetch("https://restcountries.com/v3.1/all");
+    const data = await res.json();
 
-  const res = await fetch("https://restcountries.com/v3.1/all");
-  const data = await res.json();
+    let table = document.getElementById("table");
 
-  let table = document.getElementById("table");
+    data.forEach(c => {
 
-  data.forEach(c => {
+      let name = c.name.common;
+      let capital = c.capital ? c.capital[0] : "N/A";
+      let population = c.population.toLocaleString();
+      let flag = c.flags.png;
 
-    let name = c.name.common;
-    let capital = c.capital ? c.capital[0] : "N/A";
-    let population = c.population.toLocaleString();
-    let flag = c.flags.png;
+      let language = c.languages ? Object.values(c.languages)[0] : "N/A";
+      let currency = c.currencies ? Object.values(c.currencies)[0].name : "N/A";
 
-    let language = c.languages ? Object.values(c.languages)[0] : "N/A";
-    let currency = c.currencies ? Object.values(c.currencies)[0].name : "N/A";
+      let row = table.insertRow();
 
-    let row = table.insertRow();
+      row.innerHTML = `
+        <td><img src="${flag}"></td>
+        <td>${name}</td>
+        <td>${capital}</td>
+        <td>${population}</td>
+        <td>${language}</td>
+        <td>${currency}</td>
+      `;
+    });
 
-    row.innerHTML = `
-      <td><img src="${flag}"></td>
-      <td>${name}</td>
-      <td>${capital}</td>
-      <td>${population}</td>
-      <td>${language}</td>
-      <td>${currency}</td>
-    `;
-  });
+  }catch(err){
+    alert("Data load nahi ho raha. Internet check karo.");
+  }
 }
 
 // SEARCH
@@ -187,4 +196,4 @@ function searchCountry(){
 </script>
 
 </body>
-  </html>
+</html>
