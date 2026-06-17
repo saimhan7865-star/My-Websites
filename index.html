@@ -1,256 +1,189 @@
-/* 🌍 PART 1 (COUNTRIES 1–40) */
-const countries = [
-<h1>🌍 World 206 Countries</h1>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>World 206 Countries</title>
 
-<!-- 🌍 ADD THIS FROM HERE -->
-<div style="
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  z-index:10;
-  background:rgba(0,0,0,0.6);
-  color:white;
-  padding:10px;
-  text-align:center;
-  font-size:20px;
-  font-weight:bold;
-">
-  🌍 World Map Explorer - Created by SAIM
+  <style>
+    body{
+      font-family: Arial;
+      margin:0;
+      color:white;
+
+      background-image:url("https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg");
+      background-size:cover;
+      background-attachment:fixed;
+      text-align:center;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      background:rgba(0,0,0,0.6);
+      z-index:-1;
+    }
+
+    h1{
+      margin:0;
+      padding:15px;
+      background:#5A3A1E;
+    }
+
+    h3{
+      margin:5px;
+    }
+
+    input{
+      padding:10px;
+      width:60%;
+      margin:10px;
+      font-size:16px;
+      border:none;
+      border-radius:5px;
+    }
+
+    .container{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+    }
+
+    .card{
+      background:white;
+      color:black;
+      width:200px;
+      margin:8px;
+      padding:10px;
+      border-radius:10px;
+      cursor:pointer;
+    }
+
+    .popup{
+      display:none;
+      position:fixed;
+      top:50%;
+      left:50%;
+      transform:translate(-50%,-50%);
+      background:white;
+      color:black;
+      padding:15px;
+      border-radius:10px;
+      width:320px;
+      box-shadow:0 0 10px black;
+    }
+
+    .close{
+      background:red;
+      color:white;
+      border:none;
+      padding:5px 10px;
+      float:right;
+      cursor:pointer;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<h1>🌍 World 206 Countries</h1>
+<h3>Created by Saim</h3>
+
+<input type="text" id="search" placeholder="Search country..." onkeyup="searchCountry()">
+
+<div class="container" id="container"></div>
+
+<!-- POPUP -->
+<div class="popup" id="popup">
+  <button class="close" onclick="closePopup()">X</button>
+
+  <h2 id="name"></h2>
+  <p id="capital"></p>
+  <p id="population"></p>
+  <p id="language"></p>
+  <p id="currency"></p>
+  <p id="sport"></p>
+  <p id="provinces"></p>
 </div>
 
-<div style="margin-top:60px;">
-  <img id="worldMap"
-    src="https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution.svg"
-    style="width:95%; border-radius:10px; cursor:pointer;">
-</div>document.getElementById("worldMap").onclick = function(){
+<script>
 
-  let fakeCountries = [
-    "Pakistan","India","USA","UK","China","Japan","Germany","France"
-  ];
-
-  let random = fakeCountries[Math.floor(Math.random()*fakeCountries.length)];
-
-  alert("🌍 You clicked world map!\nCountry: " + random);
-};
-<!-- 🌍 ADD END HERE -->
-["Afghanistan","Kabul","41M","Pashto","AFN","Cricket","34"],
-["Albania","Tirana","2.8M","Albanian","ALL","Football","12"],
-["Algeria","Algiers","45M","Arabic","DZD","Football","58"],
-["Andorra","Andorra la Vella","80K","Catalan","EUR","Skiing","1"],
-["Angola","Luanda","36M","Portuguese","AOA","Football","18"],
-["Argentina","Buenos Aires","46M","Spanish","ARS","Football","23"],
-["Armenia","Yerevan","3M","Armenian","AMD","Chess","11"],
-["Australia","Canberra","26M","English","AUD","Cricket","6"],
-["Austria","Vienna","9M","German","EUR","Skiing","9"],
-["Azerbaijan","Baku","10M","Azerbaijani","AZN","Wrestling","10"],
-
-["Bahamas","Nassau","0.4M","English","BSD","Sailing","23"],
-["Bahrain","Manama","1.7M","Arabic","BHD","Football","4"],
-["Bangladesh","Dhaka","170M","Bengali","BDT","Cricket","8"],
-["Barbados","Bridgetown","0.3M","English","BBD","Cricket","11"],
-["Belarus","Minsk","9M","Belarusian","BYN","Ice Hockey","6"],
-["Belgium","Brussels","11M","Dutch/French","EUR","Football","10"],
-["Belize","Belmopan","0.4M","English","BZD","Football","6"],
-["Benin","Porto-Novo","13M","French","XOF","Football","12"],
-["Bhutan","Thimphu","0.8M","Dzongkha","BTN","Archery","20"],
-["Bolivia","Sucre","12M","Spanish","BOB","Football","9"],
-
-["Brazil","Brasília","214M","Portuguese","BRL","Football","26"],
-["Brunei","Bandar Seri Begawan","0.4M","Malay","BND","Football","4"],
-["Bulgaria","Sofia","7M","Bulgarian","BGN","Volleyball","28"],
-["Burkina Faso","Ouagadougou","22M","French","XOF","Football","45"],
-["Burundi","Gitega","12M","Kirundi","BIF","Football","18"],
-
-["Cambodia","Phnom Penh","17M","Khmer","KHR","Football","25"],
-["Cameroon","Yaoundé","27M","French/English","XAF","Football","10"],
-["Canada","Ottawa","40M","English/French","CAD","Ice Hockey","10"],
-["Cape Verde","Praia","0.5M","Portuguese","CVE","Football","22"],
-["Chad","N'Djamena","17M","French/Arabic","XAF","Football","23"],
-["Chile","Santiago","19M","Spanish","CLP","Football","16"],
-["China","Beijing","1.4B","Chinese","CNY","Table Tennis","23"],
-["Colombia","Bogotá","52M","Spanish","COP","Football","32"],
-["Comoros","Moroni","0.9M","Comorian","KMF","Football","3"],
-["Congo","Brazzaville","6M","French","XAF","Football","12"]
-];/* 🌍 PART 2 (41–80) */
-
-["Croatia","Zagreb","4M","Croatian","EUR","Football","20"],
-["Cuba","Havana","11M","Spanish","CUP","Baseball","15"],
-["Cyprus","Nicosia","1.2M","Greek/Turkish","EUR","Football","6"],
-["Czech Republic","Prague","10M","Czech","CZK","Ice Hockey","14"],
-
-["Denmark","Copenhagen","6M","Danish","DKK","Football","5"],
-["Djibouti","Djibouti","1M","French/Arabic","DJF","Football","5"],
-["Dominica","Roseau","0.07M","English","XCD","Cricket","1"],
-["Dominican Republic","Santo Domingo","11M","Spanish","DOP","Baseball","31"],
-
-["Ecuador","Quito","18M","Spanish","USD","Football","24"],
-["Egypt","Cairo","110M","Arabic","EGP","Football","27"],
-["El Salvador","San Salvador","6M","Spanish","USD","Football","14"],
-["Equatorial Guinea","Malabo","1.7M","Spanish","XAF","Football","7"],
-["Eritrea","Asmara","3.6M","Tigrinya","ERN","Football","6"],
-["Estonia","Tallinn","1.3M","Estonian","EUR","Basketball","15"],
-["Eswatini","Mbabane","1.2M","English","SZL","Football","4"],
-["Ethiopia","Addis Ababa","120M","Amharic","ETB","Athletics","9"],
-
-["Fiji","Suva","0.9M","English","FJD","Rugby","300+"],
-["Finland","Helsinki","5M","Finnish","EUR","Ice Hockey","19"],
-["France","Paris","68M","French","EUR","Football","18"],
-
-["Gabon","Libreville","2M","French","XAF","Football","9"],
-["Gambia","Banjul","2M","English","GMD","Football","5"],
-["Georgia","Tbilisi","4M","Georgian","GEL","Rugby","12"],
-["Germany","Berlin","83M","German","EUR","Football","16"],
-["Ghana","Accra","33M","English","GHS","Football","16"],
-["Greece","Athens","10M","Greek","EUR","Football","13"],
-["Grenada","St. George's","0.1M","English","XCD","Cricket","6"],
-["Guatemala","Guatemala City","18M","Spanish","GTQ","Football","22"],
-["Guinea","Conakry","14M","French","GNF","Football","8"],
-["Guinea-Bissau","Bissau","2M","Portuguese","XOF","Football","8"],
-
-["Guyana","Georgetown","0.8M","English","GYD","Cricket","10"],
-["Haiti","Port-au-Prince","11M","French","HTG","Football","10"],
-["Honduras","Tegucigalpa","10M","Spanish","HNL","Football","18"],
-["Hungary","Budapest","9M","Hungarian","HUF","Water Polo","19"],
-
-["Iceland","Reykjavik","0.4M","Icelandic","ISK","Football","8"],
-["India","New Delhi","1.4B","Hindi","INR","Cricket","28"],
-["Indonesia","Jakarta","275M","Indonesian","IDR","Badminton","34"],
-["Iran","Tehran","88M","Persian","IRR","Wrestling","31"],
-["Iraq","Baghdad","44M","Arabic","IQD","Football","18"],
-["Ireland","Dublin","5M","English","EUR","Hurling","26"],
-["Israel","Jerusalem","9M","Hebrew","ILS","Football","6"],
-["Italy","Rome","60M","Italian","EUR","Football","20"]
-];/* 🌍 PART 3 (81–120) */
-
-["Jamaica","Kingston","3M","English","JMD","Athletics","14"],
-["Japan","Tokyo","125M","Japanese","JPY","Sumo","47"],
-["Jordan","Amman","11M","Arabic","JOD","Football","12"],
-
-["Kazakhstan","Astana","19M","Kazakh","KZT","Boxing","17"],
-["Kenya","Nairobi","55M","Swahili/English","KES","Athletics","47"],
-["Kiribati","Tarawa","0.12M","English","AUD","Football","3"],
-["Kuwait","Kuwait City","4M","Arabic","KWD","Football","6"],
-["Kyrgyzstan","Bishkek","7M","Kyrgyz","KGS","Wrestling","7"],
-
-["Laos","Vientiane","7M","Lao","LAK","Football","17"],
-["Latvia","Riga","1.8M","Latvian","EUR","Basketball","26"],
-["Lebanon","Beirut","6M","Arabic","LBP","Football","8"],
-["Lesotho","Maseru","2M","Sesotho","LSL","Football","10"],
-["Liberia","Monrovia","5M","English","LRD","Football","15"],
-["Libya","Tripoli","7M","Arabic","LYD","Football","22"],
-["Liechtenstein","Vaduz","0.04M","German","CHF","Football","11"],
-["Lithuania","Vilnius","2.8M","Lithuanian","EUR","Basketball","10"],
-["Luxembourg","Luxembourg","0.6M","Luxembourgish","EUR","Football","1"],
-
-["Madagascar","Antananarivo","30M","Malagasy","MGA","Football","6"],
-["Malawi","Lilongwe","20M","English","MWK","Football","28"],
-["Malaysia","Kuala Lumpur","33M","Malay","MYR","Badminton","13"],
-["Maldives","Malé","0.5M","Dhivehi","MVR","Football","20"],
-["Mali","Bamako","22M","French","XOF","Football","19"],
-["Malta","Valletta","0.5M","Maltese","EUR","Football","3"],
-["Marshall Islands","Majuro","0.06M","English","USD","Basketball","24"],
-["Mauritania","Nouakchott","5M","Arabic","MRU","Football","15"],
-["Mauritius","Port Louis","1.3M","English","MUR","Football","4"],
-["Mexico","Mexico City","126M","Spanish","MXN","Football","32"],
-
-["Micronesia","Palikir","0.11M","English","USD","Football","4"],
-["Moldova","Chișinău","3M","Romanian","MDL","Football","32"],
-["Monaco","Monaco","0.04M","French","EUR","Football","0"],
-["Mongolia","Ulaanbaatar","3M","Mongolian","MNT","Wrestling","21"],
-["Montenegro","Podgorica","0.6M","Montenegrin","EUR","Football","24"],
-["Morocco","Rabat","37M","Arabic","MAD","Football","12"],
-["Mozambique","Maputo","32M","Portuguese","MZN","Football","11"],
-["Myanmar","Naypyidaw","54M","Burmese","MMK","Football","7"],
-
-["Namibia","Windhoek","2.5M","English","NAD","Rugby","14"],
-["Nauru","Yaren","0.01M","Nauruan","AUD","Weightlifting","14"],
-["Nepal","Kathmandu","30M","Nepali","NPR","Football","7"],
-["Netherlands","Amsterdam","17M","Dutch","EUR","Football","12"],
-["New Zealand","Wellington","5M","English","NZD","Rugby","16"],
-["Nicaragua","Managua","6M","Spanish","NIO","Baseball","15"],
-["Niger","Niamey","26M","French","XOF","Football","8"],
-["Nigeria","Abuja","220M","English","NGN","Football","36"],
-["North Korea","Pyongyang","25M","Korean","KPW","Football","9"],
-["North Macedonia","Skopje","2M","Macedonian","MKD","Football","7"],
-["Norway","Oslo","5M","Norwegian","NOK","Football","11"]
-];/* 🌍 PART 4 (121–206 FINAL) */
-
-["Oman","Muscat","5M","Arabic","OMR","Football","11"],
+/* 🌍 SAMPLE WORKING FULL STRUCTURE (EXPANDABLE TO 206) */
+const countries = [
 ["Pakistan","Islamabad","240M","Urdu","PKR","Hockey","4"],
-["Palau","Ngerulmud","0.02M","English","USD","Baseball","16"],
-["Panama","Panama City","4M","Spanish","PAB","Baseball","10"],
-["Papua New Guinea","Port Moresby","10M","English","PGK","Rugby","22"],
-["Paraguay","Asunción","7M","Spanish/Guarani","PYG","Football","17"],
-["Peru","Lima","33M","Spanish","PEN","Football","25"],
-["Philippines","Manila","115M","Filipino/English","PHP","Basketball","17"],
-["Poland","Warsaw","38M","Polish","PLN","Football","16"],
-["Portugal","Lisbon","10M","Portuguese","EUR","Football","18"],
-
-["Qatar","Doha","3M","Arabic","QAR","Football","8"],
-
-["Romania","Bucharest","19M","Romanian","RON","Football","41"],
+["India","New Delhi","1.4B","Hindi","INR","Cricket","28"],
+["USA","Washington DC","330M","English","USD","American Football","50"],
+["UK","London","67M","English","GBP","Football","4"],
+["China","Beijing","1.4B","Chinese","CNY","Table Tennis","23"],
+["Japan","Tokyo","125M","Japanese","JPY","Sumo","47"],
+["Germany","Berlin","83M","German","EUR","Football","16"],
+["France","Paris","68M","French","EUR","Football","18"],
+["Brazil","Brasília","214M","Portuguese","BRL","Football","26"],
 ["Russia","Moscow","144M","Russian","RUB","Ice Hockey","85"],
-["Rwanda","Kigali","13M","Kinyarwanda","RWF","Football","5"],
-
-["Saint Kitts and Nevis","Basseterre","0.05M","English","XCD","Cricket","2"],
-["Saint Lucia","Castries","0.18M","English","XCD","Cricket","11"],
-["Saint Vincent and the Grenadines","Kingstown","0.11M","English","XCD","Cricket","6"],
-["Samoa","Apia","0.2M","Samoan","WST","Rugby","11"],
-["San Marino","San Marino","0.03M","Italian","EUR","Football","9"],
-["Sao Tome and Principe","São Tomé","0.2M","Portuguese","STN","Football","7"],
-["Saudi Arabia","Riyadh","36M","Arabic","SAR","Football","13"],
-["Senegal","Dakar","17M","French","XOF","Football","14"],
-["Serbia","Belgrade","7M","Serbian","RSD","Basketball","24"],
-["Seychelles","Victoria","0.1M","English/French","SCR","Football","26"],
-
-["Sierra Leone","Freetown","8M","English","SLL","Football","14"],
-["Singapore","Singapore","6M","English","SGD","Table Tennis","0"],
-["Slovakia","Bratislava","5M","Slovak","EUR","Ice Hockey","8"],
-["Slovenia","Ljubljana","2M","Slovene","EUR","Basketball","212"],
-["Solomon Islands","Honiara","0.7M","English","SBD","Football","9"],
-["Somalia","Mogadishu","17M","Somali","SOS","Football","18"],
-["South Africa","Pretoria","60M","English","ZAR","Rugby","9"],
-["South Korea","Seoul","52M","Korean","KRW","Taekwondo","9"],
-["South Sudan","Juba","11M","English","SSP","Football","10"],
-["Spain","Madrid","47M","Spanish","EUR","Football","17"],
-
-["Sri Lanka","Colombo","22M","Sinhala/Tamil","LKR","Cricket","9"],
-["Sudan","Khartoum","48M","Arabic","SDG","Football","18"],
-["Suriname","Paramaribo","0.6M","Dutch","SRD","Football","10"],
-["Sweden","Stockholm","10M","Swedish","SEK","Ice Hockey","21"],
-["Switzerland","Bern","8M","German/French","CHF","Football","26"],
-["Syria","Damascus","21M","Arabic","SYP","Football","14"],
-
-["Taiwan","Taipei","23M","Chinese","TWD","Baseball","22"],
-["Tajikistan","Dushanbe","10M","Tajik","TJS","Football","5"],
-["Tanzania","Dodoma","63M","Swahili","TZS","Football","31"],
-["Thailand","Bangkok","70M","Thai","THB","Muay Thai","76"],
-["Timor-Leste","Dili","1.3M","Tetum/Portuguese","USD","Football","13"],
-["Togo","Lomé","8M","French","XOF","Football","5"],
-["Tonga","Nukuʻalofa","0.1M","Tongan","TOP","Rugby","5"],
-["Trinidad and Tobago","Port of Spain","1.4M","English","TTD","Cricket","15"],
-["Tunisia","Tunis","12M","Arabic","TND","Football","24"],
 ["Turkey","Ankara","85M","Turkish","TRY","Wrestling","81"],
-
-["Turkmenistan","Ashgabat","6M","Turkmen","TMT","Football","5"],
-["Tuvalu","Funafuti","0.01M","English","AUD","Football","9"],
-
-["Uganda","Kampala","47M","English","UGX","Football","135"],
-["Ukraine","Kyiv","41M","Ukrainian","UAH","Football","24"],
-["United Arab Emirates","Abu Dhabi","10M","Arabic","AED","Football","7"],
-["United Kingdom","London","67M","English","GBP","Football","4"],
-["United States","Washington DC","330M","English","USD","American Football","50"],
-["Uruguay","Montevideo","3M","Spanish","UYU","Football","19"],
-["Uzbekistan","Tashkent","36M","Uzbek","UZS","Football","12"],
-
-["Vanuatu","Port Vila","0.3M","Bislama","VUV","Football","6"],
-["Vatican City","Vatican City","0.001M","Latin","EUR","Football","0"],
-["Venezuela","Caracas","28M","Spanish","VES","Baseball","23"],
+["Italy","Rome","60M","Italian","EUR","Football","20"],
+["Spain","Madrid","47M","Spanish","EUR","Football","17"],
+["Canada","Ottawa","40M","English/French","CAD","Ice Hockey","10"],
+["Australia","Canberra","26M","English","AUD","Cricket","6"],
+["Saudi Arabia","Riyadh","36M","Arabic","SAR","Football","13"],
+["Indonesia","Jakarta","275M","Indonesian","IDR","Badminton","34"],
+["Mexico","Mexico City","126M","Spanish","MXN","Football","32"],
+["Egypt","Cairo","110M","Arabic","EGP","Football","27"],
+["Nigeria","Abuja","220M","English","NGN","Football","36"],
+["Bangladesh","Dhaka","170M","Bengali","BDT","Cricket","8"],
+["South Africa","Pretoria","60M","English","ZAR","Rugby","9"],
 ["Vietnam","Hanoi","98M","Vietnamese","VND","Football","58"],
-
-["Yemen","Sana'a","34M","Arabic","YER","Football","22"],
-
-["Zambia","Lusaka","20M","English","ZMW","Football","10"],
-["Zimbabwe","Harare","16M","English","ZWL","Cricket","10"]
+["Thailand","Bangkok","70M","Thai","THB","Muay Thai","76"],
+["Philippines","Manila","115M","Filipino","PHP","Basketball","17"],
+["Malaysia","Kuala Lumpur","33M","Malay","MYR","Badminton","13"]
 ];
+
+let container = document.getElementById("container");
+
+function show(data){
+  container.innerHTML = "";
+
+  data.forEach(c=>{
+    container.innerHTML += `
+      <div class="card" onclick="openPopup('${c[0]}','${c[1]}','${c[2]}','${c[3]}','${c[4]}','${c[5]}','${c[6]}')">
+        <b>${c[0]}</b>
+      </div>
+    `;
+  });
+}
+
+show(countries);
+
+function openPopup(name,cap,pop,lang,curr,sport,prov){
+  document.getElementById("popup").style.display="block";
+
+  document.getElementById("name").innerText = name;
+  document.getElementById("capital").innerText = "Capital: " + cap;
+  document.getElementById("population").innerText = "Population: " + pop;
+  document.getElementById("language").innerText = "Language: " + lang;
+  document.getElementById("currency").innerText = "Currency: " + curr;
+  document.getElementById("sport").innerText = "Sport: " + sport;
+  document.getElementById("provinces").innerText = "Provinces: " + prov;
+}
+
+function closePopup(){
+  document.getElementById("popup").style.display="none";
+}
+
+function searchCountry(){
+  let val = document.getElementById("search").value.toLowerCase();
+
+  let filtered = countries.filter(c =>
+    c[0].toLowerCase().includes(val)
+  );
+
+  show(filtered);
+}
+
+</script>
+
+</body>
+</html>
