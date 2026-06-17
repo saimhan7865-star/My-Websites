@@ -49,7 +49,7 @@
 <h1>🌍 Welcome to World Countries Website</h1>
 <h2>Created by Saim</h2>
 
-<input type="text" id="search" onkeyup="searchCountry()" placeholder="Search country...">
+<input type="text" id="search" placeholder="Search country..." onkeyup="searchCountry()">
 
 <table id="table">
   <tr>
@@ -64,29 +64,29 @@
 
 <script>
 
-let allData = [];
+async function loadCountries(){
 
-fetch("https://restcountries.com/v3.1/all")
-.then(res => res.json())
-.then(data => {
+  const res = await fetch("https://restcountries.com/v3.1/all");
+  const data = await res.json();
 
-  allData = data;
+  let table = document.getElementById("table");
 
   data.forEach(country => {
 
     let name = country.name.common;
     let capital = country.capital ? country.capital[0] : "N/A";
-    let population = country.population;
+    let population = country.population.toLocaleString();
     let flag = country.flags.png;
 
-    let language = country.languages ? Object.values(country.languages)[0] : "N/A";
+    let language = "N/A";
+    if(country.languages){
+      language = Object.values(country.languages)[0];
+    }
 
     let currency = "N/A";
     if(country.currencies){
       currency = Object.values(country.currencies)[0].name;
     }
-
-    let table = document.getElementById("table");
 
     let row = table.insertRow();
 
@@ -99,7 +99,9 @@ fetch("https://restcountries.com/v3.1/all")
       <td>${currency}</td>
     `;
   });
-});
+}
+
+loadCountries();
 
 function searchCountry(){
   let input = document.getElementById("search").value.toLowerCase();
