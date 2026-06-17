@@ -1,24 +1,39 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>World Countries</title>
+  <title>World Countries Pro</title>
 
   <style>
     body{
       font-family: Arial;
-      text-align:center;
+      margin:0;
       background:#f2f2f2;
+      text-align:center;
     }
 
-    h1{
-      margin-top:20px;
+    header{
+      background:#4CAF50;
+      color:white;
+      padding:15px;
+    }
+
+    #loginBox{
+      margin-top:80px;
     }
 
     input{
       padding:10px;
-      width:60%;
-      font-size:16px;
-      margin:15px 0;
+      margin:5px;
+      width:200px;
+    }
+
+    button{
+      padding:10px 20px;
+      cursor:pointer;
+    }
+
+    #app{
+      display:none;
     }
 
     table{
@@ -26,6 +41,7 @@
       width:95%;
       background:white;
       border-collapse:collapse;
+      margin-top:20px;
     }
 
     th, td{
@@ -41,29 +57,92 @@
     img{
       width:30px;
     }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      padding:10px;
+      background:#222;
+      color:white;
+    }
   </style>
 </head>
 
 <body>
 
-<h1>🌍 Welcome to World Countries Website</h1>
-<h2>Created by Saim</h2>
+<header>
+  <h1>🌍 World Countries Website</h1>
+</header>
 
-<input type="text" id="search" placeholder="Search country..." onkeyup="searchCountry()">
+<!-- LOGIN SECTION -->
+<div id="loginBox">
+  <h2>Login / Sign Up</h2>
 
-<table id="table">
-  <tr>
-    <th>Flag</th>
-    <th>Country</th>
-    <th>Capital</th>
-    <th>Population</th>
-    <th>Language</th>
-    <th>Currency</th>
-  </tr>
-</table>
+  <input type="text" id="name" placeholder="Enter Name"><br>
+  <input type="password" id="pass" placeholder="Password"><br>
+
+  <button onclick="login()">Login</button>
+  <button onclick="signup()">Sign Up</button>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+
+  <div class="topbar">
+    <div>Welcome, <span id="user"></span></div>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <input type="text" id="search" placeholder="Search country..." onkeyup="searchCountry()">
+
+  <table id="table">
+    <tr>
+      <th>Flag</th>
+      <th>Country</th>
+      <th>Capital</th>
+      <th>Population</th>
+      <th>Language</th>
+      <th>Currency</th>
+    </tr>
+  </table>
+
+</div>
 
 <script>
 
+// LOGIN SYSTEM (simple localStorage)
+function signup(){
+  let name = document.getElementById("name").value;
+  let pass = document.getElementById("pass").value;
+
+  localStorage.setItem("user", name);
+  localStorage.setItem("pass", pass);
+
+  alert("Account created! Now login.");
+}
+
+function login(){
+  let name = document.getElementById("name").value;
+  let pass = document.getElementById("pass").value;
+
+  let sUser = localStorage.getItem("user");
+  let sPass = localStorage.getItem("pass");
+
+  if(name == sUser && pass == sPass){
+    document.getElementById("loginBox").style.display="none";
+    document.getElementById("app").style.display="block";
+    document.getElementById("user").innerText = name;
+    loadCountries();
+  }else{
+    alert("Wrong username or password");
+  }
+}
+
+function logout(){
+  location.reload();
+}
+
+// COUNTRIES API
 async function loadCountries(){
 
   const res = await fetch("https://restcountries.com/v3.1/all");
@@ -71,22 +150,15 @@ async function loadCountries(){
 
   let table = document.getElementById("table");
 
-  data.forEach(country => {
+  data.forEach(c => {
 
-    let name = country.name.common;
-    let capital = country.capital ? country.capital[0] : "N/A";
-    let population = country.population.toLocaleString();
-    let flag = country.flags.png;
+    let name = c.name.common;
+    let capital = c.capital ? c.capital[0] : "N/A";
+    let population = c.population.toLocaleString();
+    let flag = c.flags.png;
 
-    let language = "N/A";
-    if(country.languages){
-      language = Object.values(country.languages)[0];
-    }
-
-    let currency = "N/A";
-    if(country.currencies){
-      currency = Object.values(country.currencies)[0].name;
-    }
+    let language = c.languages ? Object.values(c.languages)[0] : "N/A";
+    let currency = c.currencies ? Object.values(c.currencies)[0].name : "N/A";
 
     let row = table.insertRow();
 
@@ -101,8 +173,7 @@ async function loadCountries(){
   });
 }
 
-loadCountries();
-
+// SEARCH
 function searchCountry(){
   let input = document.getElementById("search").value.toLowerCase();
   let rows = document.getElementById("table").getElementsByTagName("tr");
@@ -116,4 +187,4 @@ function searchCountry(){
 </script>
 
 </body>
-</html>
+  </html>
