@@ -1,187 +1,139 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>World 206 Countries</title>
+  <title>World Map 50+ Countries</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
   <style>
     body{
-      font-family: Arial;
       margin:0;
-      color:white;
-
-      background-image:url("https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg");
-      background-size:cover;
-      background-attachment:fixed;
+      font-family:Arial;
       text-align:center;
-    }
-
-    body::before{
-      content:"";
-      position:fixed;
-      top:0;
-      left:0;
-      width:100%;
-      height:100%;
-      background:rgba(0,0,0,0.6);
-      z-index:-1;
+      background:#111;
+      color:white;
     }
 
     h1{
       margin:0;
-      padding:15px;
+      padding:12px;
       background:#5A3A1E;
     }
 
-    h3{
-      margin:5px;
+    #map{
+      height:90vh;
+      width:100%;
     }
-
-    input{
-      padding:10px;
-      width:60%;
-      margin:10px;
-      font-size:16px;
-      border:none;
-      border-radius:5px;
-    }
-
-    .container{
-      display:flex;
-      flex-wrap:wrap;
-      justify-content:center;
-    }
-
-    .card{
-      background:white;
-      color:black;
-      width:200px;
-      margin:8px;
-      padding:10px;
-      border-radius:10px;
-      cursor:pointer;
-    }
-
-    .popup{
-      display:none;
-      position:fixed;
-      top:50%;
-      left:50%;
-      transform:translate(-50%,-50%);
-      background:white;
-      color:black;
-      padding:15px;
-      border-radius:10px;
-      width:320px;
-      box-shadow:0 0 10px black;
-    }
-
-    .close{
-      background:red;
-      color:white;
-      border:none;
-      padding:5px 10px;
-      float:right;
-      cursor:pointer;
-    }
-
   </style>
 </head>
 
 <body>
 
-<h1>🌍 World 206 Countries</h1>
-<h3>Created by Saim</h3>
+<h1>🌍 World Map (50+ Countries Data)</h1>
+<div id="map"></div>
 
-<input type="text" id="search" placeholder="Search country..." onkeyup="searchCountry()">
-
-<div class="container" id="container"></div>
-
-<!-- POPUP -->
-<div class="popup" id="popup">
-  <button class="close" onclick="closePopup()">X</button>
-
-  <h2 id="name"></h2>
-  <p id="capital"></p>
-  <p id="population"></p>
-  <p id="language"></p>
-  <p id="currency"></p>
-  <p id="sport"></p>
-  <p id="provinces"></p>
-</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
 
-/* 🌍 SAMPLE WORKING FULL STRUCTURE (EXPANDABLE TO 206) */
-const countries = [
-["Pakistan","Islamabad","240M","Urdu","PKR","Hockey","4"],
-["India","New Delhi","1.4B","Hindi","INR","Cricket","28"],
-["USA","Washington DC","330M","English","USD","American Football","50"],
-["UK","London","67M","English","GBP","Football","4"],
-["China","Beijing","1.4B","Chinese","CNY","Table Tennis","23"],
-["Japan","Tokyo","125M","Japanese","JPY","Sumo","47"],
-["Germany","Berlin","83M","German","EUR","Football","16"],
-["France","Paris","68M","French","EUR","Football","18"],
-["Brazil","Brasília","214M","Portuguese","BRL","Football","26"],
-["Russia","Moscow","144M","Russian","RUB","Ice Hockey","85"],
-["Turkey","Ankara","85M","Turkish","TRY","Wrestling","81"],
-["Italy","Rome","60M","Italian","EUR","Football","20"],
-["Spain","Madrid","47M","Spanish","EUR","Football","17"],
-["Canada","Ottawa","40M","English/French","CAD","Ice Hockey","10"],
-["Australia","Canberra","26M","English","AUD","Cricket","6"],
-["Saudi Arabia","Riyadh","36M","Arabic","SAR","Football","13"],
-["Indonesia","Jakarta","275M","Indonesian","IDR","Badminton","34"],
-["Mexico","Mexico City","126M","Spanish","MXN","Football","32"],
-["Egypt","Cairo","110M","Arabic","EGP","Football","27"],
-["Nigeria","Abuja","220M","English","NGN","Football","36"],
-["Bangladesh","Dhaka","170M","Bengali","BDT","Cricket","8"],
-["South Africa","Pretoria","60M","English","ZAR","Rugby","9"],
-["Vietnam","Hanoi","98M","Vietnamese","VND","Football","58"],
-["Thailand","Bangkok","70M","Thai","THB","Muay Thai","76"],
-["Philippines","Manila","115M","Filipino","PHP","Basketball","17"],
-["Malaysia","Kuala Lumpur","33M","Malay","MYR","Badminton","13"]
-];
+const map = L.map('map').setView([20, 0], 2);
 
-let container = document.getElementById("container");
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 6,
+}).addTo(map);
 
-function show(data){
-  container.innerHTML = "";
+/* 🌍 50+ COUNTRIES DATA */
+const countryData = {
+  "Pakistan": {capital:"Islamabad",pop:"240M",lang:"Urdu",curr:"PKR",sport:"Hockey"},
+  "India": {capital:"New Delhi",pop:"1.4B",lang:"Hindi",curr:"INR",sport:"Cricket"},
+  "USA": {capital:"Washington DC",pop:"330M",lang:"English",curr:"USD",sport:"American Football"},
+  "UK": {capital:"London",pop:"67M",lang:"English",curr:"GBP",sport:"Football"},
+  "China": {capital:"Beijing",pop:"1.4B",lang:"Chinese",curr:"CNY",sport:"Table Tennis"},
+  "Japan": {capital:"Tokyo",pop:"125M",lang:"Japanese",curr:"JPY",sport:"Sumo"},
+  "Germany": {capital:"Berlin",pop:"83M",lang:"German",curr:"EUR",sport:"Football"},
+  "France": {capital:"Paris",pop:"68M",lang:"French",curr:"EUR",sport:"Football"},
+  "Italy": {capital:"Rome",pop:"60M",lang:"Italian",curr:"EUR",sport:"Football"},
+  "Spain": {capital:"Madrid",pop:"47M",lang:"Spanish",curr:"EUR",sport:"Football"},
 
-  data.forEach(c=>{
-    container.innerHTML += `
-      <div class="card" onclick="openPopup('${c[0]}','${c[1]}','${c[2]}','${c[3]}','${c[4]}','${c[5]}','${c[6]}')">
-        <b>${c[0]}</b>
-      </div>
-    `;
-  });
+  "Brazil": {capital:"Brasília",pop:"214M",lang:"Portuguese",curr:"BRL",sport:"Football"},
+  "Russia": {capital:"Moscow",pop:"144M",lang:"Russian",curr:"RUB",sport:"Ice Hockey"},
+  "Canada": {capital:"Ottawa",pop:"40M",lang:"English/French",curr:"CAD",sport:"Ice Hockey"},
+  "Australia": {capital:"Canberra",pop:"26M",lang:"English",curr:"AUD",sport:"Cricket"},
+
+  "Saudi Arabia": {capital:"Riyadh",pop:"36M",lang:"Arabic",curr:"SAR",sport:"Football"},
+  "Turkey": {capital:"Ankara",pop:"85M",lang:"Turkish",curr:"TRY",sport:"Wrestling"},
+  "Indonesia": {capital:"Jakarta",pop:"275M",lang:"Indonesian",curr:"IDR",sport:"Badminton"},
+  "Mexico": {capital:"Mexico City",pop:"126M",lang:"Spanish",curr:"MXN",sport:"Football"},
+  "Egypt": {capital:"Cairo",pop:"110M",lang:"Arabic",curr:"EGP",sport:"Football"},
+
+  "Nigeria": {capital:"Abuja",pop:"220M",lang:"English",curr:"NGN",sport:"Football"},
+  "Bangladesh": {capital:"Dhaka",pop:"170M",lang:"Bengali",curr:"BDT",sport:"Cricket"},
+  "South Africa": {capital:"Pretoria",pop:"60M",lang:"English",curr:"ZAR",sport:"Rugby"},
+  "Vietnam": {capital:"Hanoi",pop:"98M",lang:"Vietnamese",curr:"VND",sport:"Football"},
+  "Thailand": {capital:"Bangkok",pop:"70M",lang:"Thai",curr:"THB",sport:"Muay Thai"},
+
+  "Philippines": {capital:"Manila",pop:"115M",lang:"Filipino",curr:"PHP",sport:"Basketball"},
+  "Malaysia": {capital:"Kuala Lumpur",pop:"33M",lang:"Malay",curr:"MYR",sport:"Badminton"},
+  "Pakistan": {capital:"Islamabad",pop:"240M",lang:"Urdu",curr:"PKR",sport:"Hockey"},
+  "Iran": {capital:"Tehran",pop:"88M",lang:"Persian",curr:"IRR",sport:"Wrestling"},
+  "Iraq": {capital:"Baghdad",pop:"44M",lang:"Arabic",curr:"IQD",sport:"Football"},
+
+  "Afghanistan": {capital:"Kabul",pop:"41M",lang:"Pashto",curr:"AFN",sport:"Cricket"},
+  "Ukraine": {capital:"Kyiv",pop:"41M",lang:"Ukrainian",curr:"UAH",sport:"Football"},
+  "Poland": {capital:"Warsaw",pop:"38M",lang:"Polish",curr:"PLN",sport:"Football"},
+  "Netherlands": {capital:"Amsterdam",pop:"17M",lang:"Dutch",curr:"EUR",sport:"Football"},
+  "Belgium": {capital:"Brussels",pop:"11M",lang:"Dutch/French",curr:"EUR",sport:"Football"},
+
+  "Sweden": {capital:"Stockholm",pop:"10M",lang:"Swedish",curr:"SEK",sport:"Ice Hockey"},
+  "Norway": {capital:"Oslo",pop:"5M",lang:"Norwegian",curr:"NOK",sport:"Football"},
+  "Switzerland": {capital:"Bern",pop:"8M",lang:"German/French",curr:"CHF",sport:"Football"},
+  "Greece": {capital:"Athens",pop:"10M",lang:"Greek",curr:"EUR",sport:"Football"},
+  "Portugal": {capital:"Lisbon",pop:"10M",lang:"Portuguese",curr:"EUR",sport:"Football"}
+};
+
+function popup(name){
+  let info = countryData[name];
+
+  if(info){
+    L.popup()
+    .setLatLng(map.getCenter())
+    .setContent(`
+      <b>${name}</b><br><br>
+      Capital: ${info.capital}<br>
+      Population: ${info.pop}<br>
+      Language: ${info.lang}<br>
+      Currency: ${info.curr}<br>
+      Sport: ${info.sport}
+    `)
+    .openOn(map);
+  } else {
+    alert("No data available for " + name);
+  }
 }
 
-show(countries);
+/* 🌍 REAL MAP */
+fetch("https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson")
+.then(res => res.json())
+.then(data => {
 
-function openPopup(name,cap,pop,lang,curr,sport,prov){
-  document.getElementById("popup").style.display="block";
+  L.geoJSON(data, {
+    style:{
+      color:"white",
+      weight:1,
+      fillColor:"green",
+      fillOpacity:0.2
+    },
 
-  document.getElementById("name").innerText = name;
-  document.getElementById("capital").innerText = "Capital: " + cap;
-  document.getElementById("population").innerText = "Population: " + pop;
-  document.getElementById("language").innerText = "Language: " + lang;
-  document.getElementById("currency").innerText = "Currency: " + curr;
-  document.getElementById("sport").innerText = "Sport: " + sport;
-  document.getElementById("provinces").innerText = "Provinces: " + prov;
-}
+    onEachFeature:function(feature,layer){
 
-function closePopup(){
-  document.getElementById("popup").style.display="none";
-}
+      layer.on("click", function(){
+        popup(feature.properties.ADMIN);
+      });
 
-function searchCountry(){
-  let val = document.getElementById("search").value.toLowerCase();
+    }
+  }).addTo(map);
 
-  let filtered = countries.filter(c =>
-    c[0].toLowerCase().includes(val)
-  );
-
-  show(filtered);
-}
+});
 
 </script>
 
