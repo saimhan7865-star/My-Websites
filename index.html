@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>World Countries 190+</title>
+  <title>World Countries Lite</title>
 
   <style>
     body{
@@ -34,30 +34,25 @@
 
     th, td{
       border:1px solid #ddd;
-      padding:10px;
-      font-size:14px;
+      padding:8px;
+      font-size:13px;
     }
 
     th{
       background:#4CAF50;
       color:white;
     }
-
-    img{
-      width:30px;
-    }
   </style>
 </head>
 
 <body>
 
-<h1>🌍 190+ World Countries</h1>
+<h1>🌍 World Countries (Lite Version)</h1>
 
 <input type="text" id="search" placeholder="Search country..." onkeyup="searchCountry()">
 
 <table id="table">
   <tr>
-    <th>Flag</th>
     <th>Country</th>
     <th>Capital</th>
     <th>Population</th>
@@ -68,51 +63,49 @@
 
 <script>
 
-async function loadCountries(){
+// ✔️ STATIC DATA (NO API = LOW INTERNET)
+const countries = [
+["Pakistan","Islamabad","240M","Urdu","PKR"],
+["India","New Delhi","1.4B","Hindi","INR"],
+["USA","Washington DC","330M","English","USD"],
+["UK","London","67M","English","GBP"],
+["Saudi Arabia","Riyadh","36M","Arabic","SAR"],
+["China","Beijing","1.4B","Chinese","CNY"],
+["Japan","Tokyo","125M","Japanese","JPY"],
+["Germany","Berlin","83M","German","EUR"],
+["France","Paris","68M","French","EUR"],
+["Italy","Rome","60M","Italian","EUR"],
+["Canada","Ottawa","40M","English/French","CAD"],
+["Australia","Canberra","26M","English","AUD"],
+["Brazil","Brasilia","214M","Portuguese","BRL"],
+["Russia","Moscow","144M","Russian","RUB"],
+["South Korea","Seoul","52M","Korean","KRW"],
+["Turkey","Ankara","85M","Turkish","TRY"],
+["Indonesia","Jakarta","275M","Indonesian","IDR"],
+["Mexico","Mexico City","126M","Spanish","MXN"],
+["Egypt","Cairo","110M","Arabic","EGP"],
+["Bangladesh","Dhaka","170M","Bengali","BDT"]
+];
 
-  try{
-    const res = await fetch("https://restcountries.com/v3.1/all");
-    const data = await res.json();
+let table = document.getElementById("table");
 
-    let table = document.getElementById("table");
-
-    data.sort((a,b)=>a.name.common.localeCompare(b.name.common));
-
-    data.forEach(c => {
-
-      let name = c.name.common;
-      let capital = c.capital ? c.capital[0] : "N/A";
-      let population = c.population.toLocaleString();
-      let flag = c.flags.png;
-
-      let language = c.languages ? Object.values(c.languages)[0] : "N/A";
-      let currency = c.currencies ? Object.values(c.currencies)[0].name : "N/A";
-
-      let row = table.insertRow();
-
-      row.innerHTML = `
-        <td><img src="${flag}"></td>
-        <td>${name}</td>
-        <td>${capital}</td>
-        <td>${population}</td>
-        <td>${language}</td>
-        <td>${currency}</td>
-      `;
-    });
-
-  }catch(e){
-    alert("Data load nahi ho raha. Internet check karo.");
-  }
-}
-
-loadCountries();
+countries.forEach(c=>{
+  let row = table.insertRow();
+  row.innerHTML = `
+    <td>${c[0]}</td>
+    <td>${c[1]}</td>
+    <td>${c[2]}</td>
+    <td>${c[3]}</td>
+    <td>${c[4]}</td>
+  `;
+});
 
 function searchCountry(){
   let input = document.getElementById("search").value.toLowerCase();
-  let rows = document.getElementById("table").getElementsByTagName("tr");
+  let rows = document.getElementsByTagName("tr");
 
   for(let i=1;i<rows.length;i++){
-    let country = rows[i].cells[1].innerText.toLowerCase();
+    let country = rows[i].cells[0].innerText.toLowerCase();
     rows[i].style.display = country.includes(input) ? "" : "none";
   }
 }
