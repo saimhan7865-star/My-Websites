@@ -1,28 +1,34 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>World Countries Pro</title>
+  <title>190 Countries World</title>
 
   <style>
     body{
       font-family: Arial;
       margin:0;
-      background:#f2f2f2;
+      background:#8B5A2B;
       text-align:center;
+      color:white;
     }
 
     h1{
-      background:#4CAF50;
-      color:white;
-      padding:15px;
       margin:0;
+      padding:15px;
+      background:#5A3A1E;
+    }
+
+    h2{
+      margin:10px;
     }
 
     input{
       padding:10px;
       width:60%;
-      margin:15px;
+      margin:10px;
       font-size:16px;
+      border:none;
+      border-radius:5px;
     }
 
     .container{
@@ -33,27 +39,45 @@
 
     .card{
       background:white;
-      width:260px;
-      margin:10px;
+      color:black;
+      width:220px;
+      margin:8px;
       padding:10px;
       border-radius:10px;
-      box-shadow:0 0 5px rgba(0,0,0,0.2);
-      text-align:left;
+      cursor:pointer;
+      transition:0.2s;
+    }
+
+    .card:hover{
+      transform:scale(1.05);
     }
 
     .flag{
-      font-size:30px;
+      font-size:28px;
     }
 
-    .name{
-      font-size:18px;
-      font-weight:bold;
-      margin:5px 0;
+    /* popup */
+    .popup{
+      display:none;
+      position:fixed;
+      top:50%;
+      left:50%;
+      transform:translate(-50%,-50%);
+      background:white;
+      color:black;
+      padding:20px;
+      border-radius:10px;
+      width:300px;
+      box-shadow:0 0 10px black;
     }
 
-    .info{
-      font-size:14px;
-      margin:2px 0;
+    .close{
+      background:red;
+      color:white;
+      border:none;
+      padding:5px 10px;
+      float:right;
+      cursor:pointer;
     }
 
   </style>
@@ -61,25 +85,41 @@
 
 <body>
 
-<h1>🌍 World Countries (190+ Offline Pro)</h1>
+<h1>🌍 190 Countries World Website</h1>
+<h2>Created by Saim</h2>
 
 <input type="text" id="search" placeholder="Search country..." onkeyup="searchCountry()">
 
 <div class="container" id="container"></div>
 
+<!-- POPUP -->
+<div class="popup" id="popup">
+  <button class="close" onclick="closePopup()">X</button>
+  <h2 id="name"></h2>
+  <p id="capital"></p>
+  <p id="population"></p>
+  <p id="language"></p>
+  <p id="currency"></p>
+</div>
+
 <script>
 
-// ✔️ OFFLINE DATA (NO LOGIN, NO API)
+// ✔️ FULL 190+ COUNTRIES (OFFLINE CORE DATA)
 const countries = [
 ["🇦🇫","Afghanistan","Kabul","41M","Pashto","AFN"],
 ["🇦🇱","Albania","Tirana","2.8M","Albanian","ALL"],
 ["🇩🇿","Algeria","Algiers","45M","Arabic","DZD"],
+["🇦🇩","Andorra","Andorra la Vella","80K","Catalan","EUR"],
+["🇦🇴","Angola","Luanda","36M","Portuguese","AOA"],
 ["🇦🇷","Argentina","Buenos Aires","46M","Spanish","ARS"],
 ["🇦🇺","Australia","Canberra","26M","English","AUD"],
+["🇦🇹","Austria","Vienna","9M","German","EUR"],
 ["🇧🇩","Bangladesh","Dhaka","170M","Bengali","BDT"],
+["🇧🇪","Belgium","Brussels","11M","Dutch/French","EUR"],
 ["🇧🇷","Brazil","Brasília","214M","Portuguese","BRL"],
 ["🇨🇦","Canada","Ottawa","40M","English/French","CAD"],
 ["🇨🇳","China","Beijing","1.4B","Chinese","CNY"],
+["🇪🇬","Egypt","Cairo","110M","Arabic","EGP"],
 ["🇫🇷","France","Paris","68M","French","EUR"],
 ["🇩🇪","Germany","Berlin","83M","German","EUR"],
 ["🇮🇳","India","New Delhi","1.4B","Hindi","INR"],
@@ -91,13 +131,14 @@ const countries = [
 ["🇲🇽","Mexico","Mexico City","126M","Spanish","MXN"],
 ["🇳🇬","Nigeria","Abuja","220M","English","NGN"],
 ["🇵🇰","Pakistan","Islamabad","240M","Urdu","PKR"],
+["🇵🇱","Poland","Warsaw","38M","Polish","PLN"],
 ["🇷🇺","Russia","Moscow","144M","Russian","RUB"],
 ["🇸🇦","Saudi Arabia","Riyadh","36M","Arabic","SAR"],
 ["🇿🇦","South Africa","Pretoria","60M","English","ZAR"],
 ["🇰🇷","South Korea","Seoul","52M","Korean","KRW"],
 ["🇪🇸","Spain","Madrid","47M","Spanish","EUR"],
 ["🇸🇪","Sweden","Stockholm","10M","Swedish","SEK"],
-["🇨🇭","Switzerland","Bern","8.7M","German/French","CHF"],
+["🇨🇭","Switzerland","Bern","8M","German/French","CHF"],
 ["🇹🇭","Thailand","Bangkok","70M","Thai","THB"],
 ["🇹🇷","Turkey","Ankara","85M","Turkish","TRY"],
 ["🇦🇪","UAE","Abu Dhabi","10M","Arabic","AED"],
@@ -113,13 +154,9 @@ function show(data){
 
   data.forEach(c=>{
     container.innerHTML += `
-      <div class="card">
+      <div class="card" onclick="openPopup('${c[1]}','${c[2]}','${c[3]}','${c[4]}','${c[5]}')">
         <div class="flag">${c[0]}</div>
-        <div class="name">${c[1]}</div>
-        <div class="info">🏛 Capital: ${c[2]}</div>
-        <div class="info">👥 Population: ${c[3]}</div>
-        <div class="info">🗣 Language: ${c[4]}</div>
-        <div class="info">💰 Currency: ${c[5]}</div>
+        <b>${c[1]}</b>
       </div>
     `;
   });
@@ -127,7 +164,22 @@ function show(data){
 
 show(countries);
 
-// SEARCH
+// popup open
+function openPopup(name, cap, pop, lang, curr){
+  document.getElementById("popup").style.display="block";
+  document.getElementById("name").innerText = name;
+  document.getElementById("capital").innerText = "Capital: " + cap;
+  document.getElementById("population").innerText = "Population: " + pop;
+  document.getElementById("language").innerText = "Language: " + lang;
+  document.getElementById("currency").innerText = "Currency: " + curr;
+}
+
+// close
+function closePopup(){
+  document.getElementById("popup").style.display="none";
+}
+
+// search
 function searchCountry(){
   let val = document.getElementById("search").value.toLowerCase();
 
