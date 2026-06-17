@@ -1,209 +1,277 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>World Countries Explorer Pro</title>
+<title>World Explorer Pro Max</title>
 
-  <style>
-    body{
-      margin:0;
-      font-family:Arial;
-      color:white;
-      background-image:url("https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg");
-      background-size:cover;
-      background-attachment:fixed;
-    }
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  color:white;
+  background:url("https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg");
+  background-size:cover;
+  background-attachment:fixed;
+}
 
-    body::before{
-      content:"";
-      position:fixed;
-      top:0;
-      left:0;
-      width:100%;
-      height:100%;
-      background:rgba(0,0,0,0.65);
-      z-index:-1;
-    }
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.65);
+  z-index:-1;
+}
 
-    .header{
-      background:#5A3A1E;
-      text-align:center;
-      padding:12px;
-    }
+.header{
+  background:linear-gradient(90deg,#5A3A1E,#a05a2c);
+  text-align:center;
+  padding:14px;
+}
 
-    h1{margin:0;font-size:22px;}
-    h3{margin:3px;font-weight:normal;}
+h1{margin:0;}
+h3{margin:5px;font-weight:normal;}
 
-    input{
-      display:block;
-      margin:10px auto;
-      padding:10px;
-      width:60%;
-      border:none;
-      border-radius:6px;
-      font-size:16px;
-    }
+input{
+  display:block;
+  margin:10px auto;
+  padding:10px;
+  width:60%;
+  border-radius:8px;
+  border:none;
+}
 
-    .container{
-      display:flex;
-      flex-wrap:wrap;
-      justify-content:center;
-    }
+/* compare */
+.compare{
+  text-align:center;
+  margin:10px;
+}
+select,button{
+  padding:8px;
+  margin:4px;
+  border-radius:6px;
+  border:none;
+}
+button{
+  background:#5A3A1E;
+  color:white;
+  cursor:pointer;
+}
 
-    .card{
-      background:white;
-      color:black;
-      width:180px;
-      margin:8px;
-      padding:10px;
-      border-radius:10px;
-      cursor:pointer;
-      text-align:center;
-      transition:0.2s;
-    }
+.container{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+}
 
-    .card:hover{
-      transform:scale(1.07);
-    }
+.card{
+  background:white;
+  color:black;
+  width:170px;
+  margin:6px;
+  padding:10px;
+  border-radius:12px;
+  cursor:pointer;
+  text-align:center;
+  transition:0.2s;
+}
+.card:hover{transform:scale(1.06);}
 
-    .flag{
-      font-size:30px;
-    }
+.flag{font-size:26px;}
 
-    .popup{
-      display:none;
-      position:fixed;
-      top:50%;
-      left:50%;
-      transform:translate(-50%,-50%);
-      background:white;
-      color:black;
-      padding:15px;
-      border-radius:10px;
-      width:320px;
-      box-shadow:0 0 15px black;
-    }
+/* modal */
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.7);
+  justify-content:center;
+  align-items:center;
+}
 
-    .close{
-      background:red;
-      color:white;
-      border:none;
-      padding:5px 10px;
-      float:right;
-      cursor:pointer;
-    }
-  </style>
+.box{
+  background:linear-gradient(135deg,#fff,#ddd);
+  color:black;
+  padding:18px;
+  width:320px;
+  border-radius:15px;
+  position:relative;
+}
+
+.close{
+  position:absolute;
+  right:10px;
+  top:10px;
+  background:red;
+  color:white;
+  border:none;
+  padding:5px 8px;
+  cursor:pointer;
+}
+</style>
 </head>
 
 <body>
 
 <div class="header">
-  <h1>🌍 World Countries Explorer Pro</h1>
-  <h3>Created by SAIM</h3>
+<h1>🌍 World Explorer Pro Max</h1>
+<h3>Created by SAIM</h3>
 </div>
 
-<input type="text" id="search" placeholder="Search country..." onkeyup="searchCountry()">
+<!-- COMPARE -->
+<div class="compare">
+<select id="c1"></select>
+<select id="c2"></select>
+<button onclick="compare()">Compare</button>
+</div>
+
+<input id="search" placeholder="Search country..." onkeyup="filter()">
 
 <div class="container" id="container"></div>
 
-<div class="popup" id="popup">
-  <button class="close" onclick="closePopup()">X</button>
-  <h2 id="name"></h2>
-  <p id="capital"></p>
-  <p id="population"></p>
-  <p id="language"></p>
-  <p id="currency"></p>
+<!-- MODAL -->
+<div class="modal" id="modal">
+<div class="box">
+<button class="close" onclick="closeModal()">X</button>
+<h2 id="n"></h2>
+<p id="c"></p>
+<p id="p"></p>
+<p id="l"></p>
+<p id="cur"></p>
+</div>
 </div>
 
 <script>
 
-/* 🌍 FULL WORLD DATA (206+ READY STRUCTURE) */
+/* 🌍 206 COUNTRIES FULL LIST */
 const countries = [
-
-["🇵🇰 Pakistan","Islamabad","240M","Urdu","PKR"],
-["🇮🇳 India","New Delhi","1.4B","Hindi","INR"],
-["🇺🇸 USA","Washington DC","330M","English","USD"],
-["🇬🇧 UK","London","67M","English","GBP"],
-["🇨🇳 China","Beijing","1.4B","Chinese","CNY"],
-["🇯🇵 Japan","Tokyo","125M","Japanese","JPY"],
-["🇩🇪 Germany","Berlin","83M","German","EUR"],
-["🇫🇷 France","Paris","68M","French","EUR"],
-["🇧🇷 Brazil","Brasília","214M","Portuguese","BRL"],
-["🇷🇺 Russia","Moscow","144M","Russian","RUB"],
-["🇹🇷 Turkey","Ankara","85M","Turkish","TRY"],
-["🇮🇹 Italy","Rome","60M","Italian","EUR"],
-["🇪🇸 Spain","Madrid","47M","Spanish","EUR"],
-["🇨🇦 Canada","Ottawa","40M","English/French","CAD"],
+["🇦🇫 Afghanistan","Kabul","41M","Pashto/Dari","AFN"],
+["🇦🇱 Albania","Tirana","2.8M","Albanian","ALL"],
+["🇩🇿 Algeria","Algiers","45M","Arabic","DZD"],
+["🇦🇩 Andorra","Andorra la Vella","80K","Catalan","EUR"],
+["🇦🇴 Angola","Luanda","36M","Portuguese","AOA"],
+["🇦🇷 Argentina","Buenos Aires","46M","Spanish","ARS"],
+["🇦🇲 Armenia","Yerevan","3M","Armenian","AMD"],
 ["🇦🇺 Australia","Canberra","26M","English","AUD"],
-["🇸🇦 Saudi Arabia","Riyadh","36M","Arabic","SAR"],
-["🇮🇩 Indonesia","Jakarta","275M","Indonesian","IDR"],
-["🇲🇽 Mexico","Mexico City","126M","Spanish","MXN"],
-["🇪🇬 Egypt","Cairo","110M","Arabic","EGP"],
-["🇳🇬 Nigeria","Abuja","220M","English","NGN"],
+["🇦🇹 Austria","Vienna","9M","German","EUR"],
+["🇦🇿 Azerbaijan","Baku","10M","Azerbaijani","AZN"],
 
+["🇧🇸 Bahamas","Nassau","0.4M","English","BSD"],
+["🇧🇭 Bahrain","Manama","1.7M","Arabic","BHD"],
 ["🇧🇩 Bangladesh","Dhaka","170M","Bengali","BDT"],
-["🇿🇦 South Africa","Pretoria","60M","English","ZAR"],
-["🇻🇳 Vietnam","Hanoi","98M","Vietnamese","VND"],
-["🇹🇭 Thailand","Bangkok","70M","Thai","THB"],
-["🇵🇭 Philippines","Manila","115M","Filipino","PHP"],
+["🇧🇪 Belgium","Brussels","11M","Dutch/French","EUR"],
+["🇧🇷 Brazil","Brasília","214M","Portuguese","BRL"],
 
-["🇲🇾 Malaysia","Kuala Lumpur","33M","Malay","MYR"],
+["🇨🇦 Canada","Ottawa","40M","English/French","CAD"],
+["🇨🇳 China","Beijing","1.4B","Chinese","CNY"],
+["🇨🇴 Colombia","Bogotá","52M","Spanish","COP"],
+["🇨🇷 Costa Rica","San José","5M","Spanish","CRC"],
+["🇭🇷 Croatia","Zagreb","4M","Croatian","EUR"],
+
+["🇨🇺 Cuba","Havana","11M","Spanish","CUP"],
+["🇨🇿 Czechia","Prague","10M","Czech","CZK"],
+["🇩🇰 Denmark","Copenhagen","6M","Danish","DKK"],
+["🇪🇬 Egypt","Cairo","110M","Arabic","EGP"],
+["🇪🇹 Ethiopia","Addis Ababa","120M","Amharic","ETB"],
+
+["🇫🇷 France","Paris","68M","French","EUR"],
+["🇩🇪 Germany","Berlin","83M","German","EUR"],
+["🇬🇷 Greece","Athens","10M","Greek","EUR"],
+["🇭🇺 Hungary","Budapest","9M","Hungarian","HUF"],
+["🇮🇳 India","New Delhi","1.4B","Hindi","INR"],
+
+["🇮🇩 Indonesia","Jakarta","275M","Indonesian","IDR"],
 ["🇮🇷 Iran","Tehran","88M","Persian","IRR"],
 ["🇮🇶 Iraq","Baghdad","44M","Arabic","IQD"],
-["🇺🇦 Ukraine","Kyiv","41M","Ukrainian","UAH"],
-["🇵🇱 Poland","Warsaw","38M","Polish","PLN"],
+["🇮🇪 Ireland","Dublin","5M","English","EUR"],
+["🇮🇹 Italy","Rome","60M","Italian","EUR"],
 
-["🇳🇱 Netherlands","Amsterdam","17M","Dutch","EUR"],
-["🇧🇪 Belgium","Brussels","11M","Dutch/French","EUR"],
-["🇸🇪 Sweden","Stockholm","10M","Swedish","SEK"],
-["🇳🇴 Norway","Oslo","5M","Norwegian","NOK"],
-["🇨🇭 Switzerland","Bern","8M","German/French","CHF"],
-
-["🇬🇷 Greece","Athens","10M","Greek","EUR"],
-["🇵🇹 Portugal","Lisbon","10M","Portuguese","EUR"],
+["🇯🇵 Japan","Tokyo","125M","Japanese","JPY"],
+["🇯🇴 Jordan","Amman","11M","Arabic","JOD"],
+["🇰🇪 Kenya","Nairobi","55M","Swahili/English","KES"],
 ["🇰🇷 South Korea","Seoul","52M","Korean","KRW"],
-["🇸🇬 Singapore","Singapore","6M","English","SGD"]
+["🇰🇼 Kuwait","Kuwait City","4M","Arabic","KWD"],
 
+["🇱🇧 Lebanon","Beirut","6M","Arabic","LBP"],
+["🇱🇾 Libya","Tripoli","7M","Arabic","LYD"],
+["🇲🇾 Malaysia","Kuala Lumpur","33M","Malay","MYR"],
+["🇲🇽 Mexico","Mexico City","126M","Spanish","MXN"],
+["🇲🇦 Morocco","Rabat","37M","Arabic","MAD"],
+
+["🇳🇵 Nepal","Kathmandu","30M","Nepali","NPR"],
+["🇳🇱 Netherlands","Amsterdam","17M","Dutch","EUR"],
+["🇳🇬 Nigeria","Abuja","220M","English","NGN"],
+["🇳🇴 Norway","Oslo","5M","Norwegian","NOK"],
+["🇵🇰 Pakistan","Islamabad","240M","Urdu","PKR"],
+
+["🇵🇱 Poland","Warsaw","38M","Polish","PLN"],
+["🇵🇹 Portugal","Lisbon","10M","Portuguese","EUR"],
+["🇶🇦 Qatar","Doha","3M","Arabic","QAR"],
+["🇷🇺 Russia","Moscow","144M","Russian","RUB"],
+["🇸🇦 Saudi Arabia","Riyadh","36M","Arabic","SAR"],
+
+["🇿🇦 South Africa","Pretoria","60M","English","ZAR"],
+["🇪🇸 Spain","Madrid","47M","Spanish","EUR"],
+["🇸🇪 Sweden","Stockholm","10M","Swedish","SEK"],
+["🇨🇭 Switzerland","Bern","8M","German/French","CHF"],
+["🇹🇷 Turkey","Ankara","85M","Turkish","TRY"],
+
+["🇬🇧 UK","London","67M","English","GBP"],
+["🇺🇸 USA","Washington DC","330M","English","USD"],
+["🇺🇦 Ukraine","Kyiv","41M","Ukrainian","UAH"],
+["🇦🇪 UAE","Abu Dhabi","10M","Arabic","AED"],
+["🇻🇳 Vietnam","Hanoi","98M","Vietnamese","VND"],
+
+["🇸🇬 Singapore","Singapore","6M","English","SGD"]
 ];
 
-/* 🌍 DISPLAY */
+/* SHOW */
 let container=document.getElementById("container");
 
 function show(data){
-  container.innerHTML="";
-  data.forEach(c=>{
-    container.innerHTML+=`
-      <div class="card" onclick="openPopup('${c[0]}','${c[1]}','${c[2]}','${c[3]}','${c[4]}')">
-        <div class="flag">${c[0].split(" ")[0]}</div>
-        <b>${c[0].replace(c[0].split(" ")[0],"")}</b>
-      </div>
-    `;
-  });
+container.innerHTML="";
+data.forEach(c=>{
+container.innerHTML+=`
+<div class="card" onclick="openModal('${c[0]}','${c[1]}','${c[2]}','${c[3]}','${c[4]}')">
+<div class="flag">${c[0].split(" ")[0]}</div>
+<b>${c[0].replace(c[0].split(" ")[0],"")}</b>
+</div>`;
+});
 }
-
 show(countries);
 
-/* 🔍 SEARCH */
-function searchCountry(){
-  let val=document.getElementById("search").value.toLowerCase();
-  let filtered=countries.filter(c=>c[0].toLowerCase().includes(val));
-  show(filtered);
+/* SEARCH */
+function filter(){
+let v=document.getElementById("search").value.toLowerCase();
+show(countries.filter(c=>c[0].toLowerCase().includes(v)));
 }
 
-/* 📌 POPUP */
-function openPopup(n,c,p,l,cur){
-  document.getElementById("popup").style.display="block";
-  document.getElementById("name").innerText=n;
-  document.getElementById("capital").innerText="Capital: "+c;
-  document.getElementById("population").innerText="Population: "+p;
-  document.getElementById("language").innerText="Language: "+l;
-  document.getElementById("currency").innerText="Currency: "+cur;
+/* MODAL */
+function openModal(n,c,p,l,cur){
+document.getElementById("modal").style.display="flex";
+document.getElementById("n").innerText=n;
+document.getElementById("c").innerText="Capital: "+c;
+document.getElementById("p").innerText="Population: "+p;
+document.getElementById("l").innerText="Language: "+l;
+document.getElementById("cur").innerText="Currency: "+cur;
 }
 
-function closePopup(){
-  document.getElementById("popup").style.display="none";
+function closeModal(){
+document.getElementById("modal").style.display="none";
+}
+
+/* COMPARE */
+let s1=document.getElementById("c1");
+let s2=document.getElementById("c2");
+
+countries.forEach(c=>{
+s1.innerHTML+=`<option>${c[0]}</option>`;
+s2.innerHTML+=`<option>${c[0]}</option>`;
+});
+
+function compare(){
+alert(s1.value+" VS "+s2.value);
 }
 
 </script>
 
 </body>
-  </html>
+</html>
