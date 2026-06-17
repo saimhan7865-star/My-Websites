@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>World Map 50+ Countries</title>
+  <title>World Map Pro Max</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
@@ -9,9 +9,9 @@
     body{
       margin:0;
       font-family:Arial;
-      text-align:center;
       background:#111;
       color:white;
+      text-align:center;
     }
 
     h1{
@@ -29,7 +29,7 @@
 
 <body>
 
-<h1>🌍 World Map (50+ Countries Data)</h1>
+<h1>🌍 World Map Explorer (Flags + Info)</h1>
 <div id="map"></div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -42,76 +42,41 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 6,
 }).addTo(map);
 
-/* 🌍 50+ COUNTRIES DATA */
+/* 🌍 50+ COUNTRIES WITH FLAGS */
 const countryData = {
-  "Pakistan": {capital:"Islamabad",pop:"240M",lang:"Urdu",curr:"PKR",sport:"Hockey"},
-  "India": {capital:"New Delhi",pop:"1.4B",lang:"Hindi",curr:"INR",sport:"Cricket"},
-  "USA": {capital:"Washington DC",pop:"330M",lang:"English",curr:"USD",sport:"American Football"},
-  "UK": {capital:"London",pop:"67M",lang:"English",curr:"GBP",sport:"Football"},
-  "China": {capital:"Beijing",pop:"1.4B",lang:"Chinese",curr:"CNY",sport:"Table Tennis"},
-  "Japan": {capital:"Tokyo",pop:"125M",lang:"Japanese",curr:"JPY",sport:"Sumo"},
-  "Germany": {capital:"Berlin",pop:"83M",lang:"German",curr:"EUR",sport:"Football"},
-  "France": {capital:"Paris",pop:"68M",lang:"French",curr:"EUR",sport:"Football"},
-  "Italy": {capital:"Rome",pop:"60M",lang:"Italian",curr:"EUR",sport:"Football"},
-  "Spain": {capital:"Madrid",pop:"47M",lang:"Spanish",curr:"EUR",sport:"Football"},
+  "Pakistan": {flag:"🇵🇰",capital:"Islamabad",pop:"240M",lang:"Urdu",curr:"PKR",sport:"Hockey"},
+  "India": {flag:"🇮🇳",capital:"New Delhi",pop:"1.4B",lang:"Hindi",curr:"INR",sport:"Cricket"},
+  "USA": {flag:"🇺🇸",capital:"Washington DC",pop:"330M",lang:"English",curr:"USD",sport:"American Football"},
+  "UK": {flag:"🇬🇧",capital:"London",pop:"67M",lang:"English",curr:"GBP",sport:"Football"},
+  "China": {flag:"🇨🇳",capital:"Beijing",pop:"1.4B",lang:"Chinese",curr:"CNY",sport:"Table Tennis"},
+  "Japan": {flag:"🇯🇵",capital:"Tokyo",pop:"125M",lang:"Japanese",curr:"JPY",sport:"Sumo"},
+  "Germany": {flag:"🇩🇪",capital:"Berlin",pop:"83M",lang:"German",curr:"EUR",sport:"Football"},
+  "France": {flag:"🇫🇷",capital:"Paris",pop:"68M",lang:"French",curr:"EUR",sport:"Football"},
+  "Italy": {flag:"🇮🇹",capital:"Rome",pop:"60M",lang:"Italian",curr:"EUR",sport:"Football"},
+  "Spain": {flag:"🇪🇸",capital:"Madrid",pop:"47M",lang:"Spanish",curr:"EUR",sport:"Football"},
 
-  "Brazil": {capital:"Brasília",pop:"214M",lang:"Portuguese",curr:"BRL",sport:"Football"},
-  "Russia": {capital:"Moscow",pop:"144M",lang:"Russian",curr:"RUB",sport:"Ice Hockey"},
-  "Canada": {capital:"Ottawa",pop:"40M",lang:"English/French",curr:"CAD",sport:"Ice Hockey"},
-  "Australia": {capital:"Canberra",pop:"26M",lang:"English",curr:"AUD",sport:"Cricket"},
+  "Brazil": {flag:"🇧🇷",capital:"Brasília",pop:"214M",lang:"Portuguese",curr:"BRL",sport:"Football"},
+  "Russia": {flag:"🇷🇺",capital:"Moscow",pop:"144M",lang:"Russian",curr:"RUB",sport:"Ice Hockey"},
+  "Canada": {flag:"🇨🇦",capital:"Ottawa",pop:"40M",lang:"English/French",curr:"CAD",sport:"Ice Hockey"},
+  "Australia": {flag:"🇦🇺",capital:"Canberra",pop:"26M",lang:"English",curr:"AUD",sport:"Cricket"},
 
-  "Saudi Arabia": {capital:"Riyadh",pop:"36M",lang:"Arabic",curr:"SAR",sport:"Football"},
-  "Turkey": {capital:"Ankara",pop:"85M",lang:"Turkish",curr:"TRY",sport:"Wrestling"},
-  "Indonesia": {capital:"Jakarta",pop:"275M",lang:"Indonesian",curr:"IDR",sport:"Badminton"},
-  "Mexico": {capital:"Mexico City",pop:"126M",lang:"Spanish",curr:"MXN",sport:"Football"},
-  "Egypt": {capital:"Cairo",pop:"110M",lang:"Arabic",curr:"EGP",sport:"Football"},
+  "Saudi Arabia": {flag:"🇸🇦",capital:"Riyadh",pop:"36M",lang:"Arabic",curr:"SAR",sport:"Football"},
+  "Turkey": {flag:"🇹🇷",capital:"Ankara",pop:"85M",lang:"Turkish",curr:"TRY",sport:"Wrestling"},
+  "Indonesia": {flag:"🇮🇩",capital:"Jakarta",pop:"275M",lang:"Indonesian",curr:"IDR",sport:"Badminton"},
+  "Mexico": {flag:"🇲🇽",capital:"Mexico City",pop:"126M",lang:"Spanish",curr:"MXN",sport:"Football"},
+  "Egypt": {flag:"🇪🇬",capital:"Cairo",pop:"110M",lang:"Arabic",curr:"EGP",sport:"Football"},
 
-  "Nigeria": {capital:"Abuja",pop:"220M",lang:"English",curr:"NGN",sport:"Football"},
-  "Bangladesh": {capital:"Dhaka",pop:"170M",lang:"Bengali",curr:"BDT",sport:"Cricket"},
-  "South Africa": {capital:"Pretoria",pop:"60M",lang:"English",curr:"ZAR",sport:"Rugby"},
-  "Vietnam": {capital:"Hanoi",pop:"98M",lang:"Vietnamese",curr:"VND",sport:"Football"},
-  "Thailand": {capital:"Bangkok",pop:"70M",lang:"Thai",curr:"THB",sport:"Muay Thai"},
+  "Nigeria": {flag:"🇳🇬",capital:"Abuja",pop:"220M",lang:"English",curr:"NGN",sport:"Football"},
+  "Bangladesh": {flag:"🇧🇩",capital:"Dhaka",pop:"170M",lang:"Bengali",curr:"BDT",sport:"Cricket"},
+  "South Africa": {flag:"🇿🇦",capital:"Pretoria",pop:"60M",lang:"English",curr:"ZAR",sport:"Rugby"},
+  "Vietnam": {flag:"🇻🇳",capital:"Hanoi",pop:"98M",lang:"Vietnamese",curr:"VND",sport:"Football"},
+  "Thailand": {flag:"🇹🇭",capital:"Bangkok",pop:"70M",lang:"Thai",curr:"THB",sport:"Muay Thai"},
 
-  "Philippines": {capital:"Manila",pop:"115M",lang:"Filipino",curr:"PHP",sport:"Basketball"},
-  "Malaysia": {capital:"Kuala Lumpur",pop:"33M",lang:"Malay",curr:"MYR",sport:"Badminton"},
-  "Pakistan": {capital:"Islamabad",pop:"240M",lang:"Urdu",curr:"PKR",sport:"Hockey"},
-  "Iran": {capital:"Tehran",pop:"88M",lang:"Persian",curr:"IRR",sport:"Wrestling"},
-  "Iraq": {capital:"Baghdad",pop:"44M",lang:"Arabic",curr:"IQD",sport:"Football"},
-
-  "Afghanistan": {capital:"Kabul",pop:"41M",lang:"Pashto",curr:"AFN",sport:"Cricket"},
-  "Ukraine": {capital:"Kyiv",pop:"41M",lang:"Ukrainian",curr:"UAH",sport:"Football"},
-  "Poland": {capital:"Warsaw",pop:"38M",lang:"Polish",curr:"PLN",sport:"Football"},
-  "Netherlands": {capital:"Amsterdam",pop:"17M",lang:"Dutch",curr:"EUR",sport:"Football"},
-  "Belgium": {capital:"Brussels",pop:"11M",lang:"Dutch/French",curr:"EUR",sport:"Football"},
-
-  "Sweden": {capital:"Stockholm",pop:"10M",lang:"Swedish",curr:"SEK",sport:"Ice Hockey"},
-  "Norway": {capital:"Oslo",pop:"5M",lang:"Norwegian",curr:"NOK",sport:"Football"},
-  "Switzerland": {capital:"Bern",pop:"8M",lang:"German/French",curr:"CHF",sport:"Football"},
-  "Greece": {capital:"Athens",pop:"10M",lang:"Greek",curr:"EUR",sport:"Football"},
-  "Portugal": {capital:"Lisbon",pop:"10M",lang:"Portuguese",curr:"EUR",sport:"Football"}
+  "Philippines": {flag:"🇵🇭",capital:"Manila",pop:"115M",lang:"Filipino",curr:"PHP",sport:"Basketball"},
+  "Malaysia": {flag:"🇲🇾",capital:"Kuala Lumpur",pop:"33M",lang:"Malay",curr:"MYR",sport:"Badminton"}
 };
 
-function popup(name){
-  let info = countryData[name];
-
-  if(info){
-    L.popup()
-    .setLatLng(map.getCenter())
-    .setContent(`
-      <b>${name}</b><br><br>
-      Capital: ${info.capital}<br>
-      Population: ${info.pop}<br>
-      Language: ${info.lang}<br>
-      Currency: ${info.curr}<br>
-      Sport: ${info.sport}
-    `)
-    .openOn(map);
-  } else {
-    alert("No data available for " + name);
-  }
-}
-
-/* 🌍 REAL MAP */
+/* 🌍 LOAD WORLD MAP */
 fetch("https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson")
 .then(res => res.json())
 .then(data => {
@@ -127,7 +92,33 @@ fetch("https://raw.githubusercontent.com/datasets/geo-countries/master/data/coun
     onEachFeature:function(feature,layer){
 
       layer.on("click", function(){
-        popup(feature.properties.ADMIN);
+
+        let name = feature.properties.ADMIN;
+        let info = countryData[name];
+
+        if(info){
+          L.popup()
+          .setLatLng(layer.getBounds().getCenter())
+          .setContent(`
+            <div style="text-align:center;">
+              <div style="font-size:35px;">${info.flag}</div>
+              <b style="font-size:18px;">${name}</b>
+              <hr>
+              Capital: ${info.capital}<br>
+              Population: ${info.pop}<br>
+              Language: ${info.lang}<br>
+              Currency: ${info.curr}<br>
+              Sport: ${info.sport}
+            </div>
+          `)
+          .openOn(map);
+        } else {
+          L.popup()
+          .setLatLng(layer.getBounds().getCenter())
+          .setContent(`<b>${name}</b><br>No data available`)
+          .openOn(map);
+        }
+
       });
 
     }
