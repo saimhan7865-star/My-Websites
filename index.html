@@ -44,12 +44,14 @@ input{
   text-align:center;
   margin:10px;
 }
+
 select,button{
   padding:8px;
   margin:4px;
   border-radius:6px;
   border:none;
 }
+
 button{
   background:#5A3A1E;
   color:white;
@@ -73,6 +75,7 @@ button{
   text-align:center;
   transition:0.2s;
 }
+
 .card:hover{transform:scale(1.06);}
 
 .flag{font-size:26px;}
@@ -106,6 +109,11 @@ button{
   padding:5px 8px;
   cursor:pointer;
 }
+
+#result{
+  color:green;
+  font-weight:bold;
+}
 </style>
 </head>
 
@@ -131,17 +139,21 @@ button{
 <div class="modal" id="modal">
 <div class="box">
 <button class="close" onclick="closeModal()">X</button>
+
 <h2 id="n"></h2>
 <p id="c"></p>
 <p id="p"></p>
 <p id="l"></p>
 <p id="cur"></p>
+
+<h3 id="result"></h3>
+
 </div>
 </div>
 
 <script>
 
-/* 🌍 206 COUNTRIES FULL LIST */
+/* 🌍 COUNTRIES */
 const countries = [
 ["🇦🇫 Afghanistan","Kabul","41M","Pashto/Dari","AFN"],
 ["🇦🇱 Albania","Tirana","2.8M","Albanian","ALL"],
@@ -222,8 +234,6 @@ const countries = [
 
 ["🇸🇬 Singapore","Singapore","6M","English","SGD"]
 ];
-
-/* SHOW */
 let container=document.getElementById("container");
 
 function show(data){
@@ -249,16 +259,17 @@ function openModal(n,c,p,l,cur){
 document.getElementById("modal").style.display="flex";
 document.getElementById("n").innerText=n;
 document.getElementById("c").innerText="Capital: "+c;
-document.getElementById("p").innerText="Population: "+p;
+document.getElementById("p").innerText="Population: "+p+"M";
 document.getElementById("l").innerText="Language: "+l;
 document.getElementById("cur").innerText="Currency: "+cur;
+document.getElementById("result").innerText="";
 }
 
 function closeModal(){
 document.getElementById("modal").style.display="none";
 }
 
-/* COMPARE */
+/* COMPARE SYSTEM */
 let s1=document.getElementById("c1");
 let s2=document.getElementById("c2");
 
@@ -268,7 +279,26 @@ s2.innerHTML+=`<option>${c[0]}</option>`;
 });
 
 function compare(){
-alert(s1.value+" VS "+s2.value);
+
+let a = countries.find(c=>c[0]==s1.value);
+let b = countries.find(c=>c[0]==s2.value);
+
+let popA = Number(a[2]);
+let popB = Number(b[2]);
+
+let winner = popA > popB ? a : b;
+
+document.getElementById("modal").style.display="flex";
+
+document.getElementById("n").innerText="⚔ Country Battle Result";
+document.getElementById("c").innerText="";
+document.getElementById("p").innerText="";
+document.getElementById("l").innerText="";
+document.getElementById("cur").innerText="";
+
+document.getElementById("result").innerHTML =
+`${a[0]} VS ${b[0]} <br><br>
+🏆 WINNER: <b>${winner[0]}</b>`;
 }
 
 </script>
